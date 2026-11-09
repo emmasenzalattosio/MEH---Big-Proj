@@ -13,7 +13,7 @@ namespace MEH
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddDbContext<MehDbContext>
-                (opts => opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                (opts => opts.UseSqlServer(builder.Configuration.GetConnectionString("MEH")));
 
             var app = builder.Build();
 
