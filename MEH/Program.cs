@@ -23,7 +23,7 @@ namespace MEH
                 db.Database.Migrate();
             }
             //
-
+            //
             app.UseStaticFiles();
             app.UseRouting();
 
