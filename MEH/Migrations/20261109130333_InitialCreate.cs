@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MEH.Migrations
 {
     /// <inheritdoc />
-    public partial class Kategorie : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,10 +15,10 @@ namespace MEH.Migrations
                 name: "Kategorie",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Beschreibung = table.Column<string>(type: "TEXT", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Beschreibung = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,13 +29,13 @@ namespace MEH.Migrations
                 name: "Mitarbeiter",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Vorname = table.Column<string>(type: "TEXT", nullable: false),
-                    Nachname = table.Column<string>(type: "TEXT", nullable: false),
-                    Email = table.Column<string>(type: "TEXT", nullable: false),
-                    Password = table.Column<string>(type: "TEXT", nullable: false),
-                    Fachbereich = table.Column<string>(type: "TEXT", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Vorname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nachname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Fachbereich = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,11 +46,11 @@ namespace MEH.Migrations
                 name: "Ticket",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Titel = table.Column<string>(type: "TEXT", nullable: false),
-                    Beschreibung = table.Column<string>(type: "TEXT", nullable: false),
-                    ErstelltAm = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Titel = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Beschreibung = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ErstelltAm = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
