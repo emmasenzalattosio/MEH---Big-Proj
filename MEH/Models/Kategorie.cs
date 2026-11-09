@@ -1,4 +1,4 @@
-﻿namespace MEH.Models
+namespace MEH.Models
 {
     public class Kategorie
     {
