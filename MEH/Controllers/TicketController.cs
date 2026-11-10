@@ -22,17 +22,12 @@ namespace MEH.Controllers
         // GET: Ticket/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var ticket = await _context.Ticket
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
+
+            if (ticket == null) return NotFound();
 
             return View(ticket);
         }
@@ -60,16 +55,12 @@ namespace MEH.Controllers
         // GET: Ticket/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var ticket = await _context.Ticket.FindAsync(id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
+
+            if (ticket == null) return NotFound();
+
             return View(ticket);
         }
 
@@ -78,10 +69,7 @@ namespace MEH.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id, [Bind("ID,Titel,Beschreibung,ErstelltAm")] Ticket ticket)
         {
-            if (id != ticket.ID)
-            {
-                return NotFound();
-            }
+            if (id != ticket.ID) return NotFound();
 
             if (ModelState.IsValid)
             {
