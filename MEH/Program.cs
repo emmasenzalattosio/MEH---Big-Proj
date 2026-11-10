@@ -22,8 +22,7 @@ namespace MEH
                 var db = scope.ServiceProvider.GetRequiredService<MehDbContext>();
                 db.Database.Migrate();
             }
-            //
-            //
+         
             app.UseStaticFiles();
             app.UseRouting();
 
