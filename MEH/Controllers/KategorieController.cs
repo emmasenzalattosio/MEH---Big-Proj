@@ -16,7 +16,7 @@ namespace MEH.Controllers
         // GET: Kategorie
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Kategorie.ToListAsync());
+            return View(await _context.Kategorie.Include(k => k.Tickets));
         }
 
         // GET: Kategorie/Details/5
