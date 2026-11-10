@@ -20,6 +20,7 @@ namespace MEH.Models
         [Display(Name = "Priorität")]
         public TicketPrioritaet Prioritaet { get; set; }
 
+        //Relationship to the Status
         [Required(ErrorMessage = "Gimme Status bihhh")]
         [Display(Name = "Status")]
         public TicketStatus Status { get; set; }
