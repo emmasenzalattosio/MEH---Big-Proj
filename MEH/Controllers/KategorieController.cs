@@ -13,11 +13,13 @@ namespace MEH.Controllers
             _context = context;
         }
 
+
         // GET: Kategorie
         public async Task<IActionResult> Index()
         {
             return View(await _context.Kategorie.Include(k => k.Tickets).OrderBy(k => k.Name).ToListAsync());
         }
+
 
         // GET: Kategorie/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -34,11 +36,14 @@ namespace MEH.Controllers
             return View(kategorie);
         }
 
+
+
         // GET: Kategorie/Create
         public IActionResult Create()
         {
             return View();
         }
+
 
 
         // POST: Kategorie/Create
@@ -57,6 +62,8 @@ namespace MEH.Controllers
         }
 
 
+
+
         // GET: Kategorie/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -68,6 +75,8 @@ namespace MEH.Controllers
 
             return View(kategorie);
         }
+
+
 
 
         // POST: Kategorie/Edit/5
@@ -87,6 +96,8 @@ namespace MEH.Controllers
 
             return View(kategorie);
         }
+
+
 
 
         // GET: Kategorie/Delete/5
