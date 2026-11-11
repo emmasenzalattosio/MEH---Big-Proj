@@ -1,31 +1,191 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem black, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+:root {
+    --accent: #A100FF;
+    --accent-hover: #7B00C4;
+    --accent-soft: #F6ECFF;
+    --bg-page: #F8F8FA;
+    --bg-surface: #FFFFFF;
+    --ink: #0A0A0D;
+    --ink-muted: #5C5C6B;
+    --border-color: #E2E2EA;
+    --border-strong: #121217;
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: var(--bg-page);
+    color: var(--ink);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    margin-bottom: 60px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Top Navbar */
+.wos-navbar {
+    background-color: #08080B;
+    border-bottom: 3px solid var(--accent);
+    padding: 0.75rem 0;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.wos-brand {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #FFFFFF !important;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.wos-chevron {
+    color: var(--accent);
+    font-weight: 900;
+    font-size: 1.35rem;
+    line-height: 1;
+}
+
+.wos-nav-link {
+    color: #B4B4C2 !important;
+    font-weight: 600;
+    font-size: 0.92rem;
+    padding: 0.5rem 1rem !important;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+    .wos-nav-link:hover,
+    .wos-nav-link.active {
+        color: #FFFFFF !important;
+        background-color: rgba(161, 0, 255, 0.22);
+    }
+
+/* Hero Banner */
+.wos-hero {
+    background: linear-gradient(135deg, #0B0B10 0%, #190928 100%);
+    color: #FFFFFF;
+    border-left: 5px solid var(--accent);
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.wos-eyebrow {
+    font-family: Consolas, monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #C975FF;
+    margin-bottom: 0.35rem;
+}
+
+/* KPI Cards (4-Box Strip) */
+.wos-kpi-card {
+    background: var(--bg-surface);
+    border: 1.5px solid var(--border-color);
+    border-top: 3px solid var(--ink);
+    padding: 1.15rem 1.25rem;
+    text-decoration: none;
+    color: var(--ink);
+    display: block;
+    transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+    .wos-kpi-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent);
+        border-top-color: var(--accent);
+        color: var(--ink);
+        box-shadow: 0 6px 18px rgba(161, 0, 255, 0.08);
+    }
+
+    .wos-kpi-card.kpi-accent {
+        border-top-color: var(--accent);
+    }
+
+.wos-kpi-number {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    font-family: Consolas, monospace;
+}
+
+.wos-kpi-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-muted);
+}
+
+/* Content Cards */
+.wos-card {
+    background: var(--bg-surface);
+    border: 1.5px solid var(--border-color);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.wos-card-header {
+    border-bottom: 1.5px solid var(--border-color);
+    padding-bottom: 0.85rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Buttons */
+.btn-accent {
+    background-color: var(--accent);
+    color: #FFFFFF;
+    font-weight: 700;
+    border: none;
+    padding: 0.55rem 1.15rem;
+}
+
+    .btn-accent:hover {
+        background-color: var(--accent-hover);
+        color: #FFFFFF;
+    }
+
+/* Status & Priority Badges */
+.badge-status-offen {
+    background-color: #DBEAFE;
+    color: #1E40AF;
+    border: 1px solid #93C5FD;
+}
+
+.badge-status-arbeit {
+    background-color: #FEF3C7;
+    color: #92400E;
+    border: 1px solid #FCD34D;
+}
+
+.badge-status-abgeschlossen {
+    background-color: #DCFCE7;
+    color: #166534;
+    border: 1px solid #86EFAC;
+}
+
+.badge-prio-hoch {
+    background-color: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid #FCA5A5;
+}
+
+.badge-prio-mittel {
+    background-color: #F3E8FF;
+    color: #6B21A8;
+    border: 1px solid #D8B4FE;
+}
+
+.badge-prio-niedrig {
+    background-color: #F3F4F6;
+    color: #374151;
+    border: 1px solid #D1D5DB;
+}
+
+/* Lock Banner for Closed Tickets */
+.wos-lock-banner {
+    background-color: #FFFBEB;
+    border: 2px solid #F59E0B;
+    border-left: 6px solid #D97706;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
 }
