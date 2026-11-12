@@ -190,43 +190,45 @@ body {
     margin-bottom: 1.5rem;
 }
 
-/* Dark Mode specific tweaks */
-[data-bs-theme="dark"] {
-    --bg-page: #0E0E14;
-    --bg-surface: #171720;
-    --ink: #F3F4F6;
-    --ink-muted: #9CA3AF;
-    --border-color: #2D2D3D;
+/* DEFAULT = DEEP DARK MODE (Matching your Figma design) */
+:root, [data-bs-theme="dark"] {
+    --accent: #A100FF;
+    --accent-hover: #C975FF;
+    --bg-page: #000000;
+    --bg-surface: #08080C;
+    --ink: #FFFFFF;
+    --ink-muted: #8E8E9E;
+    --border-color: #20202A;
+    --border-strong: #333344;
 }
 
-    [data-bs-theme="dark"] body {
-        background-color: var(--bg-page);
-        color: var(--ink);
-    }
+/* OPTIONAL LIGHT MODE OVERRIDE */
+[data-bs-theme="light"] {
+    --accent: #A100FF;
+    --accent-hover: #7B00C4;
+    --bg-page: #F7F6F2;
+    --bg-surface: #FFFFFF;
+    --ink: #0A0A0D;
+    --ink-muted: #5C5C6B;
+    --border-color: #E2E2EA;
+    --border-strong: #121217;
+}
 
-    [data-bs-theme="dark"] .wos-card,
-    [data-bs-theme="dark"] .wos-kpi-card {
-        background-color: var(--bg-surface);
-        border-color: var(--border-color);
-        color: var(--ink);
-    }
+body {
+    background-color: var(--bg-page);
+    color: var(--ink);
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    margin-bottom: 60px;
+}
 
-    [data-bs-theme="dark"] .table {
-        --bs-table-bg: var(--bg-surface);
-        --bs-table-color: var(--ink);
-        border-color: var(--border-color);
-    }
+/* Crisp grid borders */
+.wos-card, .wos-kpi-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    color: var(--ink);
+}
 
-    [data-bs-theme="dark"] .table-light {
-        --bs-table-bg: #1F1F2B;
-        --bs-table-color: #E5E7EB;
-    }
-
-    [data-bs-theme="dark"] .bg-light {
-        background-color: #1F1F2B !important;
-    }
-
-    [data-bs-theme="dark"] footer {
-        background-color: #12121A !important;
-        border-color: var(--border-color) !important;
-    }
+/* Neon numbers in dark mode */
+[data-bs-theme="dark"] .wos-kpi-number {
+    color: var(--accent) !important;
+}
