@@ -1,37 +1,39 @@
 @model MEH.Models.Kategorie
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Kategorie bearbeiten";
 }
 
-<h1>Edit</h1>
-
-<h4>Kategorie</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Beschreibung" class="control-label"></label>
-                <input asp-for="Beschreibung" class="form-control" />
-                <span asp-validation-for="Beschreibung" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="sd-kopf">
+    <div>
+        <div class="sd-label">Seite 05 // KAT-@Model.ID.ToString("00")</div>
+        <h1 class="sd-seiten-titel">Kategorie <em>bearbeiten</em></h1>
     </div>
+    <a asp-action="Index" class="btn btn-outline-dark">&lt; Zurück zur Übersicht</a>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="sd-formular">
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ID" />
+
+        <div class="form-group">
+            <label asp-for="Name" class="form-label">Name der Kategorie *</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Beschreibung" class="form-label">Kurzbeschreibung</label>
+            <textarea asp-for="Beschreibung" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Beschreibung" class="text-danger"></span>
+        </div>
+
+        <div class="sd-formular-aktionen">
+            <a asp-action="Index" class="btn btn-outline-dark">Abbrechen</a>
+            <button type="submit" class="btn btn-dark">Änderungen speichern &gt;</button>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

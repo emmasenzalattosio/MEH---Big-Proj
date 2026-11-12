@@ -1,56 +1,67 @@
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+
+    // Markiert den aktiven Tab in der Navigation
+    string Aktiv(string c, string? a = null) =>
+        controller == c && (a == null || action == a) ? "sd-nav-link aktiv" : "sd-nav-link";
+
+    bool tabTickets = controller == "Ticket" && action != "Create";
+    bool tabDashboard = controller == "Home";
+}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MEH</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] – ServiceDesk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MEH.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MEH</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="Index">Tickets</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Mitarbeiter" asp-action="Index">Mitarbeiter</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Kategorie" asp-action="Index">Kategorien</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="sd-rahmen">
+
+        <!-- Meta-Zeile -->
+        <div class="sd-meta">
+            <span>ASP.NET CORE MVC | ROUTE: GET /@controller/@action</span>
+            <span>KAFFEE-INDEX: STABIL (92°C) | STANDORT DORTMUND</span>
+        </div>
+
+        <!-- Hauptnavigation -->
+        <header class="sd-header">
+            <a class="sd-brand" asp-controller="Home" asp-action="Index">WOS <span class="sd-akzent">&gt;</span> ServiceDesk</a>
+            <nav class="sd-nav">
+                <a class="@(tabTickets || tabDashboard ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Ticket" asp-action="Index">01 / Dashboard &amp; Tickets</a>
+                <a class="@Aktiv("Ticket", "Create")" asp-controller="Ticket" asp-action="Create">02 / + Neues Ticket</a>
+                <a class="@Aktiv("Mitarbeiter")" asp-controller="Mitarbeiter" asp-action="Index">03 / Mitarbeiter</a>
+                <a class="@Aktiv("Kategorie")" asp-controller="Kategorie" asp-action="Index">04 / Kategorien</a>
+            </nav>
+            <a class="sd-melden" asp-controller="Ticket" asp-action="Create">Störung melden &gt;</a>
+        </header>
+
+        <main role="main" class="sd-main">
+            @* Erfolgs- und Fehlermeldungen aus den Controllern (TempData) *@
+            @if (TempData["Erfolg"] is string erfolg)
+            {
+                <div class="sd-flash sd-flash-ok">✓ @erfolg</div>
+            }
+            @if (TempData["Fehler"] is string fehler)
+            {
+                <div class="sd-flash sd-flash-fehler">■ @fehler</div>
+            }
             @RenderBody()
         </main>
+
+        <footer class="sd-footer">
+            <span>WOS / DORTMUND · INTERN. NÜCHTERN. NACHVOLLZIEHBAR.</span>
+            <span>&copy; @DateTime.Now.Year SERVICEDESK · <a asp-controller="Home" asp-action="Privacy">DATENSCHUTZ</a></span>
+        </footer>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - MEH - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

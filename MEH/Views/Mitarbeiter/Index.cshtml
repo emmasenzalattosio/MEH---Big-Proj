@@ -1,59 +1,91 @@
 @model IEnumerable<MEH.Models.Mitarbeiter>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Mitarbeiter";
 }
 
-<h1>Index</h1>
+<div class="sd-label">[ Stammdaten // IT-Support &amp; Personal ]</div>
+<h1 class="sd-hero-titel">Menschen, die wissen, wo <em>der Server steht.</em></h1>
+<p class="sd-intro">Keine Rollen-Bürokratie, keine Login-Wall – klare Zuständigkeiten als sauber verknüpfte Datensätze (1:n).</p>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Vorname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nachname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fachbereich)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.Vorname)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Nachname)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Fachbereich)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="sd-split">
+    <!-- Liste -->
+    <div class="sd-split-haupt">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID //</th>
+                    <th>Vorname &amp; Nachname</th>
+                    <th>E-Mail</th>
+                    <th>Fachbereich</th>
+                    <th>Aktive Tickets</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="sd-mono">#EMP-@item.ID.ToString("00")</td>
+                        <td><strong>@item.Vorname @item.Nachname</strong></td>
+                        <td class="sd-mono sd-klein">@item.Email</td>
+                        <td class="sd-mono sd-klein">[@item.Fachbereich]</td>
+                        @{ var aktiv = item.Tickets.Count(t => t.Status != TicketStatus.Schluss); }
+                        <td><span class="sd-badge @(aktiv > 0 ? "sd-prio-hoch" : "sd-prio-niedrig")">@aktiv.ToString("00") Tickets</span></td>
+                        <td class="sd-aktionen">
+                            <a asp-action="Edit" asp-route-id="@item.ID">Edit &gt; /</a>
+                            <a asp-action="Details" asp-route-id="@item.ID">Details &gt; /</a>
+                            <a asp-action="Delete" asp-route-id="@item.ID">Delete &gt;</a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="sd-klein">Noch keine Mitarbeiter erfasst. Leg rechts den ersten an.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Neuen Mitarbeiter direkt erfassen -->
+    <aside class="sd-split-seite">
+        <form asp-action="Create" class="sd-panel">
+            <div class="sd-label mb-3">Neuen Mitarbeiter erfassen //</div>
+
+            <div class="row g-2">
+                <div class="col-6 form-group">
+                    <label class="form-label" for="neu-vorname">Vorname *</label>
+                    <input class="form-control" id="neu-vorname" name="Vorname" />
+                </div>
+                <div class="col-6 form-group">
+                    <label class="form-label" for="neu-nachname">Nachname *</label>
+                    <input class="form-control" id="neu-nachname" name="Nachname" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="neu-email">E-Mail-Adresse *</label>
+                <input class="form-control" id="neu-email" name="Email" type="email" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="neu-fachbereich">Fachbereich *</label>
+                <input class="form-control" id="neu-fachbereich" name="Fachbereich" placeholder="z. B. Netzwerk, Hardware" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="neu-passwort">Passwort *</label>
+                <input class="form-control" id="neu-passwort" name="Password" type="password" />
+            </div>
+
+            <button type="submit" class="btn btn-dark w-100">+ Mitarbeiter anlegen</button>
+        </form>
+
+        <div class="sd-hinweis mt-3">
+            <div class="sd-label sd-label-akzent">■ Datenbank-Regel // 1:n Referenzschutz</div>
+            <p class="mb-0 mt-2">Mitarbeiter, denen noch Tickets zugewiesen sind, können nicht gelöscht werden. So geht kein Ticket verloren – erst neu zuweisen, dann löschen.</p>
+        </div>
+    </aside>
+</div>
