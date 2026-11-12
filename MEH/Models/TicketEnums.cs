@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 namespace MEH.Models
 {
     public enum TicketPrioritaet
@@ -11,20 +11,17 @@ namespace MEH.Models
 
         [Display(Name = "Hoch")]
         Hoch = 2,
-
-
     }
 
     public enum TicketStatus
     {
         [Display(Name = "Offen")]
-        Offen = 0, 
+        Offen = 0,
 
         [Display(Name = "In Bearbeitung")]
-        InBearbeitung = 1, 
+        InBearbeitung = 1,
 
-        [Display(Name = "Schluss")]
-        Schluss = 2, 
-
+        [Display(Name = "Abgeschlossen")]
+        Schluss = 2,
     }
 }

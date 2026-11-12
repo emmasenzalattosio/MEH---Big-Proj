@@ -1,41 +1,53 @@
 @model IEnumerable<MEH.Models.Kategorie>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Kategorien";
 }
 
-<h1>Index</h1>
+<div class="sd-label">[ Klassifizierung // Ticket-Kategorien ]</div>
+<h1 class="sd-hero-titel">Schubladen, die <em>wirklich helfen.</em></h1>
+<p class="sd-intro">„Geht nicht“ ist keine Kategorie. Hier werden Themenbereiche verwaltet, damit jedes Ticket direkt beim richtigen Spezialisten landet.</p>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Beschreibung)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Beschreibung)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="sd-karten">
+    @foreach (var item in Model)
+    {
+        <div class="sd-karte">
+            <div class="sd-label">KAT-@item.ID.ToString("00") // @item.Tickets.Count TICKETS</div>
+            <h2 class="sd-karte-titel">@item.Name</h2>
+            <p class="sd-karte-text">@item.Beschreibung</p>
+            <div class="sd-karte-aktionen">
+                <a asp-action="Edit" asp-route-id="@item.ID">Bearbeiten &gt;</a>
+                <span>|</span>
+                <a asp-action="Details" asp-route-id="@item.ID">Details &gt;</a>
+                <span>|</span>
+                <a asp-action="Delete" asp-route-id="@item.ID">Löschen &gt;</a>
+            </div>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="sd-karte sd-leer">
+            <div class="sd-label">KAT-00 // LEER</div>
+            <p class="sd-karte-text">Noch keine Kategorien angelegt. Leg unten die erste an.</p>
+        </div>
+    }
+</div>
+
+<!-- Neue Kategorie direkt auf der Übersicht anlegen -->
+<form asp-action="Create" class="sd-neu-leiste">
+    <div class="sd-neu-feld">
+        <div class="sd-label">Neue Kategorie anlegen //</div>
+        <label class="form-label" for="neu-name">Name der Kategorie *</label>
+        <input class="form-control" id="neu-name" name="Name" placeholder="z. B. Telefonie" maxlength="50" />
+    </div>
+    <div class="sd-neu-feld">
+        <div class="sd-label">&nbsp;</div>
+        <label class="form-label" for="neu-beschreibung">Kurzbeschreibung</label>
+        <input class="form-control" id="neu-beschreibung" name="Beschreibung" placeholder="Wofür wird diese Kategorie genutzt?" maxlength="500" />
+    </div>
+    <div class="sd-neu-feld sd-neu-aktion">
+        <button type="submit" class="btn btn-akzent w-100">+ Kategorie speichern</button>
+        <p class="sd-klein">Kategorien mit verknüpften Tickets sind vor versehentlichem Löschen geschützt.</p>
+    </div>
+</form>

@@ -13,38 +13,30 @@ namespace MEH.Controllers
             _context = context;
         }
 
-
         // GET: Kategorie
         public async Task<IActionResult> Index()
         {
             return View(await _context.Kategorie.Include(k => k.Tickets).OrderBy(k => k.Name).ToListAsync());
         }
 
-
         // GET: Kategorie/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
-
 
             var kategorie = await _context.Kategorie
                 .Include(k => k.Tickets)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (kategorie == null) return NotFound();
 
-
             return View(kategorie);
         }
-
-
 
         // GET: Kategorie/Create
         public IActionResult Create()
         {
             return View();
         }
-
-
 
         // POST: Kategorie/Create
         [HttpPost]
@@ -55,29 +47,22 @@ namespace MEH.Controllers
             {
                 _context.Add(kategorie);
                 await _context.SaveChangesAsync();
-                TempData["Erfolg"] = $"Kategorie  ´{kategorie.Name} wurde angeleckt";
-                return RedirectToAction("Index", "Mitarbeiter");
+                TempData["Erfolg"] = $"Kategorie „{kategorie.Name}“ wurde angelegt.";
+                return RedirectToAction(nameof(Index));
             }
             return View(kategorie);
         }
-
-
-
 
         // GET: Kategorie/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
-
             var kategorie = await _context.Kategorie.FindAsync(id);
             if (kategorie == null) return NotFound();
 
             return View(kategorie);
         }
-
-
-
 
         // POST: Kategorie/Edit/5
         [HttpPost]
@@ -90,19 +75,13 @@ namespace MEH.Controllers
             {
                 _context.Update(kategorie);
                 await _context.SaveChangesAsync();
-                TempData["Erfolg"] = $"Kategorie {kategorie.Name} wurde aktualisiert";
-                return RedirectToAction("Index", "Mitarbeiter");
+                TempData["Erfolg"] = $"Kategorie „{kategorie.Name}“ wurde aktualisiert.";
+                return RedirectToAction(nameof(Index));
             }
 
             return View(kategorie);
         }
 
-
-
-
-        // POST: Kategorie/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
         // GET: Kategorie/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -111,13 +90,13 @@ namespace MEH.Controllers
             var kategorie = await _context.Kategorie
                 .Include(k => k.Tickets)
                 .FirstOrDefaultAsync(m => m.ID == id);
-
             if (kategorie == null) return NotFound();
 
             return View(kategorie);
         }
 
         // POST: Kategorie/Delete/5
+        // Löschregel: Eine Kategorie mit zugeordneten Tickets darf nicht gelöscht werden.
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
@@ -130,18 +109,15 @@ namespace MEH.Controllers
             {
                 if (kategorie.Tickets.Any())
                 {
-                    TempData["Fehler"] = "Diese Kategorie kann nicht gelöscht werden, da ihr noch Tickets zugewiesen sind!";
-                    return RedirectToAction("Index", "Mitarbeiter");
+                    TempData["Fehler"] = $"Kategorie „{kategorie.Name}“ kann nicht gelöscht werden: Ihr sind noch {kategorie.Tickets.Count} Ticket(s) zugeordnet.";
+                    return RedirectToAction(nameof(Index));
                 }
 
                 _context.Kategorie.Remove(kategorie);
                 await _context.SaveChangesAsync();
-                TempData["Erfolg"] = $"Kategorie {kategorie.Name} wurde gelöscht.";
+                TempData["Erfolg"] = $"Kategorie „{kategorie.Name}“ wurde gelöscht.";
             }
-
-            return RedirectToAction("Index", "Mitarbeiter");
+            return RedirectToAction(nameof(Index));
         }
-
-
     }
 }

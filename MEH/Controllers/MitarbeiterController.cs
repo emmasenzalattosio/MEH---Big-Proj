@@ -59,6 +59,7 @@ namespace MEH.Controllers
             {
                 _context.Add(mitarbeiter);
                 await _context.SaveChangesAsync();
+                TempData["Erfolg"] = $"Mitarbeiter {mitarbeiter.Name} wurde angelegt.";
                 return RedirectToAction(nameof(Index));
             }
             return View(mitarbeiter);
@@ -88,7 +89,7 @@ namespace MEH.Controllers
             {
                 _context.Update(mitarbeiter);
                 await _context.SaveChangesAsync();
-                TempData["Erfolg"] = $"Mitarbeiter {mitarbeiter.Name} wurde gechanged ";
+                TempData["Erfolg"] = $"Mitarbeiter {mitarbeiter.Name} wurde aktualisiert.";
 
                 return RedirectToAction(nameof(Index));
             }
@@ -115,20 +116,22 @@ namespace MEH.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            var mitarbeiter = await _context.Mitarbeiter.FindAsync(id);
+            // Tickets mitladen, sonst ist die Liste leer und die Löschregel greift nicht
+            var mitarbeiter = await _context.Mitarbeiter
+                .Include(m => m.Tickets)
+                .FirstOrDefaultAsync(m => m.ID == id);
 
             if (mitarbeiter != null)
             {
-
+                // Löschregel: Mitarbeiter mit zugewiesenen Tickets dürfen nicht gelöscht werden
                 if (mitarbeiter.Tickets.Any())
                 {
-                    TempData["Fehler"] = $"You wanna delete {mitarbeiter.Name}?? you can´t he has still {mitarbeiter.Tickets.Count} Tickets and cannot be gekundigt";
+                    TempData["Fehler"] = $"{mitarbeiter.Name} kann nicht gelöscht werden: Ihm/ihr sind noch {mitarbeiter.Tickets.Count} Ticket(s) zugewiesen. Bitte die Tickets zuerst neu zuweisen.";
                     return RedirectToAction(nameof(Index));
-
                 }
                 _context.Mitarbeiter.Remove(mitarbeiter);
                 await _context.SaveChangesAsync();
-                TempData["Erfolg"] = $"Mitarbeiter {mitarbeiter.Name} wurde gekundigt";
+                TempData["Erfolg"] = $"Mitarbeiter {mitarbeiter.Name} wurde gelöscht.";
             }
             return RedirectToAction(nameof(Index));
         }
