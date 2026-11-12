@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MEH.Migrations
 {
     [DbContext(typeof(MehDbContext))]
-    [Migration("20261110133820_RolleHinzugefuegt")]
-    partial class RolleHinzugefuegt
+    [Migration("20261112112000_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,12 +34,13 @@ namespace MEH.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Beschreibung")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("ID");
 
@@ -64,7 +65,8 @@ namespace MEH.Migrations
 
                     b.Property<string>("Nachname")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -75,7 +77,8 @@ namespace MEH.Migrations
 
                     b.Property<string>("Vorname")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("ID");
 
@@ -104,7 +107,7 @@ namespace MEH.Migrations
                     b.Property<int>("KategorieID")
                         .HasColumnType("int");
 
-                    b.Property<int>("MitarbeiterID")
+                    b.Property<int?>("MitarbeiterID")
                         .HasColumnType("int");
 
                     b.Property<int>("Prioritaet")
@@ -129,17 +132,18 @@ namespace MEH.Migrations
 
             modelBuilder.Entity("MEH.Models.Ticket", b =>
                 {
-                    b.HasOne("MEH.Models.Kategorie", null)
+                    b.HasOne("MEH.Models.Kategorie", "Kategorie")
                         .WithMany("Tickets")
                         .HasForeignKey("KategorieID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("MEH.Models.Mitarbeiter", "Mitarbeiter")
                         .WithMany("Tickets")
                         .HasForeignKey("MitarbeiterID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Kategorie");
 
                     b.Navigation("Mitarbeiter");
                 });

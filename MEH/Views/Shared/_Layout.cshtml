@@ -2,7 +2,6 @@
     var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
     var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
 
-    // Markiert den aktiven Tab in der Navigation
     string Aktiv(string c, string? a = null) =>
         controller == c && (a == null || action == a) ? "sd-nav-link aktiv" : "sd-nav-link";
 
@@ -10,41 +9,53 @@
     bool tabDashboard = controller == "Home";
 }
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] – ServiceDesk</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MEH.styles.css" asp-append-version="true" />
 </head>
 <body>
+    <!-- Hintergrund-Looping-Video -->
+    <video class="sd-bg-video" autoplay muted loop playsinline preload="auto">
+        <source src="~/bg-hex.mp4" type="video/mp4" />
+    </video>
+    <div class="sd-bg-overlay"></div>
+
     <div class="sd-rahmen">
 
         <!-- Meta-Zeile -->
         <div class="sd-meta">
             <span>ASP.NET CORE MVC | ROUTE: GET /@controller/@action</span>
-            <span>KAFFEE-INDEX: STABIL (92°C) | STANDORT DORTMUND</span>
+            <span>STANDORT DORTMUND · WESTFALEN OFFICE SOLUTIONS</span>
         </div>
 
         <!-- Hauptnavigation -->
         <header class="sd-header">
-            <a class="sd-brand" asp-controller="Home" asp-action="Index">WOS <span class="sd-akzent">&gt;</span> ServiceDesk</a>
+            <a class="sd-brand" asp-controller="Ticket" asp-action="Index">
+                <span class="sd-brand-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>
+                    </svg>
+                </span>
+                <span>ServiceDesk</span>
+            </a>
             <nav class="sd-nav">
-                <a class="@(tabTickets || tabDashboard ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Ticket" asp-action="Index">01 / Dashboard &amp; Tickets</a>
-                <a class="@Aktiv("Ticket", "Create")" asp-controller="Ticket" asp-action="Create">02 / + Neues Ticket</a>
-                <a class="@Aktiv("Mitarbeiter")" asp-controller="Mitarbeiter" asp-action="Index">03 / Mitarbeiter</a>
-                <a class="@Aktiv("Kategorie")" asp-controller="Kategorie" asp-action="Index">04 / Kategorien</a>
+                <a class="@(tabTickets || tabDashboard ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Ticket" asp-action="Index">Dashboard</a>
+                <a class="@Aktiv("Ticket")" asp-controller="Ticket" asp-action="Index">Tickets</a>
+                <a class="@Aktiv("Mitarbeiter")" asp-controller="Mitarbeiter" asp-action="Index">Mitarbeiter</a>
+                <a class="@Aktiv("Kategorie")" asp-controller="Kategorie" asp-action="Index">Kategorien</a>
             </nav>
-            <a class="sd-melden" asp-controller="Ticket" asp-action="Create">Störung melden &gt;</a>
+            <a class="sd-melden" asp-controller="Ticket" asp-action="Create">+ Neues Ticket</a>
         </header>
 
         <main role="main" class="sd-main">
-            @* Erfolgs- und Fehlermeldungen aus den Controllern (TempData) *@
             @if (TempData["Erfolg"] is string erfolg)
             {
                 <div class="sd-flash sd-flash-ok">✓ @erfolg</div>
@@ -66,32 +77,5 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
-
-
-    @* light dark mode *@
-    <script>
-        // Default is 'dark' unless the user previously explicitly chose 'light'
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-bs-theme', savedTheme);
-        updateToggleLabel(savedTheme);
-
-        document.getElementById('themeToggle')?.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-            document.documentElement.setAttribute('data-bs-theme', nextTheme);
-            localStorage.setItem('theme', nextTheme);
-            updateToggleLabel(nextTheme);
-        });
-
-        function updateToggleLabel(theme) {
-            const icon = document.getElementById('themeIcon');
-            if (icon) {
-                icon.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
-            }
-        }
-    </script>
-
 </body>
 </html>

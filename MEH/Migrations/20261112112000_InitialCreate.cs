@@ -17,8 +17,8 @@ namespace MEH.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Beschreibung = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Beschreibung = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -31,11 +31,12 @@ namespace MEH.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Vorname = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Nachname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Vorname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Nachname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fachbereich = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Fachbereich = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Rolle = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,7 +56,7 @@ namespace MEH.Migrations
                     Status = table.Column<int>(type: "int", nullable: false),
                     HatNeuGestartet = table.Column<bool>(type: "bit", nullable: false),
                     KategorieID = table.Column<int>(type: "int", nullable: false),
-                    MitarbeiterID = table.Column<int>(type: "int", nullable: false)
+                    MitarbeiterID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -65,13 +66,13 @@ namespace MEH.Migrations
                         column: x => x.KategorieID,
                         principalTable: "Kategorie",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Ticket_Mitarbeiter_MitarbeiterID",
                         column: x => x.MitarbeiterID,
                         principalTable: "Mitarbeiter",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
