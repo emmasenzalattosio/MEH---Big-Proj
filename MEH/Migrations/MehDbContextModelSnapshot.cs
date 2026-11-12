@@ -126,7 +126,7 @@ namespace MEH.Migrations
 
             modelBuilder.Entity("MEH.Models.Ticket", b =>
                 {
-                    b.HasOne("MEH.Models.Kategorie", null)
+                    b.HasOne("MEH.Models.Kategorie", "Kategorie")
                         .WithMany("Tickets")
                         .HasForeignKey("KategorieID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -137,6 +137,8 @@ namespace MEH.Migrations
                         .HasForeignKey("MitarbeiterID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Kategorie");
 
                     b.Navigation("Mitarbeiter");
                 });

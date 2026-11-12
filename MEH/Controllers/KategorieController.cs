@@ -13,11 +13,13 @@ namespace MEH.Controllers
             _context = context;
         }
 
+
         // GET: Kategorie
         public async Task<IActionResult> Index()
         {
             return View(await _context.Kategorie.Include(k => k.Tickets).OrderBy(k => k.Name).ToListAsync());
         }
+
 
         // GET: Kategorie/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -34,11 +36,14 @@ namespace MEH.Controllers
             return View(kategorie);
         }
 
+
+
         // GET: Kategorie/Create
         public IActionResult Create()
         {
             return View();
         }
+
 
 
         // POST: Kategorie/Create
@@ -57,6 +62,8 @@ namespace MEH.Controllers
         }
 
 
+
+
         // GET: Kategorie/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -68,6 +75,8 @@ namespace MEH.Controllers
 
             return View(kategorie);
         }
+
+
 
 
         // POST: Kategorie/Edit/5
@@ -89,6 +98,11 @@ namespace MEH.Controllers
         }
 
 
+
+
+        // POST: Kategorie/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
         // GET: Kategorie/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -103,26 +117,29 @@ namespace MEH.Controllers
             return View(kategorie);
         }
 
-
         // POST: Kategorie/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             var kategorie = await _context.Kategorie
-            .Include(k => k.ID == id)
-            .FirstOrDefaultAsync();
+                .Include(k => k.Tickets)
+                .FirstOrDefaultAsync(k => k.ID == id);
 
             if (kategorie != null)
             {
+                if (kategorie.Tickets.Any())
+                {
+                    TempData["Fehler"] = "Diese Kategorie kann nicht gelöscht werden, da ihr noch Tickets zugewiesen sind!";
+                    return RedirectToAction("Index", "Mitarbeiter");
+                }
 
                 _context.Kategorie.Remove(kategorie);
                 await _context.SaveChangesAsync();
-                TempData["Erfolg"] = $"Kategorie {kategorie.Name} wurde geloscht";
-
+                TempData["Erfolg"] = $"Kategorie {kategorie.Name} wurde gelöscht.";
             }
-                return RedirectToAction("Index", "Mitarbeiter");
 
+            return RedirectToAction("Index", "Mitarbeiter");
         }
 
 
