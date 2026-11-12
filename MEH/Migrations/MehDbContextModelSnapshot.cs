@@ -67,6 +67,9 @@ namespace MEH.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Rolle")
+                        .HasColumnType("int");
+
                     b.Property<string>("Vorname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -86,18 +89,66 @@ namespace MEH.Migrations
 
                     b.Property<string>("Beschreibung")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("ErstelltAm")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("HatNeuGestartet")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("KategorieID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MitarbeiterID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Prioritaet")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<string>("Titel")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
 
                     b.HasKey("ID");
 
+                    b.HasIndex("KategorieID");
+
+                    b.HasIndex("MitarbeiterID");
+
                     b.ToTable("Ticket");
+                });
+
+            modelBuilder.Entity("MEH.Models.Ticket", b =>
+                {
+                    b.HasOne("MEH.Models.Kategorie", null)
+                        .WithMany("Tickets")
+                        .HasForeignKey("KategorieID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MEH.Models.Mitarbeiter", "Mitarbeiter")
+                        .WithMany("Tickets")
+                        .HasForeignKey("MitarbeiterID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mitarbeiter");
+                });
+
+            modelBuilder.Entity("MEH.Models.Kategorie", b =>
+                {
+                    b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("MEH.Models.Mitarbeiter", b =>
+                {
+                    b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618
         }
