@@ -67,6 +67,9 @@ namespace MEH.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Rolle")
+                        .HasColumnType("int");
+
                     b.Property<string>("Vorname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
