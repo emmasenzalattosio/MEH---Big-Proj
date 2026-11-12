@@ -189,3 +189,44 @@ body {
     padding: 1rem 1.25rem;
     margin-bottom: 1.5rem;
 }
+
+/* Dark Mode specific tweaks */
+[data-bs-theme="dark"] {
+    --bg-page: #0E0E14;
+    --bg-surface: #171720;
+    --ink: #F3F4F6;
+    --ink-muted: #9CA3AF;
+    --border-color: #2D2D3D;
+}
+
+    [data-bs-theme="dark"] body {
+        background-color: var(--bg-page);
+        color: var(--ink);
+    }
+
+    [data-bs-theme="dark"] .wos-card,
+    [data-bs-theme="dark"] .wos-kpi-card {
+        background-color: var(--bg-surface);
+        border-color: var(--border-color);
+        color: var(--ink);
+    }
+
+    [data-bs-theme="dark"] .table {
+        --bs-table-bg: var(--bg-surface);
+        --bs-table-color: var(--ink);
+        border-color: var(--border-color);
+    }
+
+    [data-bs-theme="dark"] .table-light {
+        --bs-table-bg: #1F1F2B;
+        --bs-table-color: #E5E7EB;
+    }
+
+    [data-bs-theme="dark"] .bg-light {
+        background-color: #1F1F2B !important;
+    }
+
+    [data-bs-theme="dark"] footer {
+        background-color: #12121A !important;
+        border-color: var(--border-color) !important;
+    }

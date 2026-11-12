@@ -32,6 +32,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Kategorie" asp-action="Index">Kategorien</a>
                         </li>
+                        <li class="nav-item">
+                            <button id="themeToggle" class="btn btn-sm btn-outline-secondary ms-2" type="button" title="Dark/Light Mode umschalten">
+                                <span id="themeIcon">🌙</span>
+                            </button>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -48,5 +53,35 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+
+
+    @* light dark mode *@
+    <script>
+        // 1. Check saved preference in localStorage or system preference
+        const savedTheme = localStorage.getItem('theme') ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    
+        document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        // 2. Toggle button click event
+        document.getElementById('themeToggle')?.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+            document.documentElement.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+            }
+        }
+    </script>
+
 </body>
 </html>
