@@ -1,17 +1,13 @@
-/* =========================================================
-   ServiceDesk – Dark Theme mit animiertem Video-Hintergrund
-   ========================================================= */
-
 :root {
     --sd-bg: #0b0f19;
     --sd-flaeche: rgba(17, 24, 39, 0.78);
     --sd-flaeche-hover: rgba(30, 41, 59, 0.88);
-    --sd-ink: #f8fafc;
+    --sd-ink: #ffffff;
     --sd-muted: #94a3b8;
-    --sd-linie: rgba(59, 130, 246, 0.18);
+    --sd-linie: #94a3b8;
     --sd-linie-hell: rgba(255, 255, 255, 0.08);
-    --sd-akzent: #2563eb;          /* Electric Blue */
-    --sd-akzent-hell: rgba(37, 99, 235, 0.2);
+    --sd-akzent: #60a5fa;          
+    --sd-akzent-hell: rgba(30, 41, 59, 0.88);
     --sd-fehler: #ef4444;
     --sd-gelb: rgba(245, 158, 11, 0.2);
     --sd-grün: rgba(16, 185, 129, 0.2);
@@ -62,7 +58,7 @@ body {
 }
 
 a { color: #60a5fa; text-decoration: none; transition: color 0.15s ease; }
-a:hover { color: #93c5fd; }
+a:hover { color: rgba(37, 99, 235, 0.3); }
 
 h1, h2, h3, h4 {
     font-family: var(--sd-sans);
@@ -118,7 +114,7 @@ h1, h2, h3, h4 {
     align-items: stretch;
     border: 1px solid var(--sd-linie);
     border-radius: 12px;
-    background: rgba(15, 23, 42, 0.75);
+    background: rgba(30, 41, 59, 0.88);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     overflow: hidden;
@@ -205,7 +201,7 @@ h1, h2, h3, h4 {
     letter-spacing: .05em;
     color: var(--sd-muted);
 }
-.sd-label-akzent { color: #60a5fa; }
+.sd-label-akzent { color: #6ee7b7; }
 
 .sd-hero-titel {
     font-size: clamp(2rem, 3.5vw, 2.75rem);
