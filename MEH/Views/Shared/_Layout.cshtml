@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html lang="de" data-bs-theme="dark">
+    
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -33,7 +35,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Kategorie" asp-action="Index">Kategorien</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <button id="themeToggle" class="btn btn-sm btn-outline-light font-monospace py-0 px-2" type="button" title="Hell/Dunkel umschalten">
+                                <span id="themeIcon">☀️ Light Mode</span>
+                            </button>
                         </li>
                     </ul>
                 </div>
@@ -46,14 +50,37 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - MEH - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+
+
+    @* light dark mode *@
+    <script>
+        // Default is 'dark' unless the user previously explicitly chose 'light'
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        updateToggleLabel(savedTheme);
+
+        document.getElementById('themeToggle')?.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+            document.documentElement.setAttribute('data-bs-theme', nextTheme);
+            localStorage.setItem('theme', nextTheme);
+            updateToggleLabel(nextTheme);
+        });
+
+        function updateToggleLabel(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+            }
+        }
+    </script>
+
 </body>
 </html>
