@@ -1,234 +1,560 @@
+/* =========================================================
+   ServiceDesk – Designsystem (nach Figma-Mockup "MEH")
+   ========================================================= */
+
 :root {
-    --accent: #A100FF;
-    --accent-hover: #7B00C4;
-    --accent-soft: #F6ECFF;
-    --bg-page: #F8F8FA;
-    --bg-surface: #FFFFFF;
-    --ink: #0A0A0D;
-    --ink-muted: #5C5C6B;
-    --border-color: #E2E2EA;
-    --border-strong: #121217;
+    --sd-bg: #F4F2EC;          /* Cremeweiß */
+    --sd-flaeche: #FAF9F5;     /* Karten / Felder */
+    --sd-ink: #111111;         /* Text */
+    --sd-muted: #6E6B64;       /* Nebentext */
+    --sd-linie: #D8D4CA;       /* Rasterlinien */
+    --sd-akzent: #9B00FF;      /* Lila */
+    --sd-akzent-hell: #F3E6FF;
+    --sd-fehler: #D7263D;
+    --sd-gelb: #FFF3C4;
+    --sd-grün: #E3F4E1;
+
+    --sd-sans: "Space Grotesk", "Segoe UI", Arial, sans-serif;
+    --sd-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+    --sd-mono: "JetBrains Mono", Consolas, "Courier New", monospace;
 }
+
+html { font-size: 15px; }
 
 body {
-    background-color: var(--bg-page);
-    color: var(--ink);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    margin-bottom: 60px;
+    background: var(--sd-bg);
+    color: var(--sd-ink);
+    font-family: var(--sd-sans);
+    margin: 0;
 }
 
-/* Top Navbar */
-.wos-navbar {
-    background-color: #08080B;
-    border-bottom: 3px solid var(--accent);
-    padding: 0.75rem 0;
-}
+a { color: var(--sd-akzent); text-decoration: none; }
+a:hover { color: var(--sd-ink); }
 
-.wos-brand {
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: #FFFFFF !important;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-}
-
-.wos-chevron {
-    color: var(--accent);
-    font-weight: 900;
-    font-size: 1.35rem;
-    line-height: 1;
-}
-
-.wos-nav-link {
-    color: #B4B4C2 !important;
-    font-weight: 600;
-    font-size: 0.92rem;
-    padding: 0.5rem 1rem !important;
-    border-radius: 4px;
-    transition: all 0.15s ease;
-}
-
-    .wos-nav-link:hover,
-    .wos-nav-link.active {
-        color: #FFFFFF !important;
-        background-color: rgba(161, 0, 255, 0.22);
-    }
-
-/* Hero Banner */
-.wos-hero {
-    background: linear-gradient(135deg, #0B0B10 0%, #190928 100%);
-    color: #FFFFFF;
-    border-left: 5px solid var(--accent);
-    padding: 1.5rem 1.75rem;
-    margin-bottom: 1.5rem;
-}
-
-.wos-eyebrow {
-    font-family: Consolas, monospace;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: #C975FF;
-    margin-bottom: 0.35rem;
-}
-
-/* KPI Cards (4-Box Strip) */
-.wos-kpi-card {
-    background: var(--bg-surface);
-    border: 1.5px solid var(--border-color);
-    border-top: 3px solid var(--ink);
-    padding: 1.15rem 1.25rem;
-    text-decoration: none;
-    color: var(--ink);
-    display: block;
-    transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
-}
-
-    .wos-kpi-card:hover {
-        transform: translateY(-2px);
-        border-color: var(--accent);
-        border-top-color: var(--accent);
-        color: var(--ink);
-        box-shadow: 0 6px 18px rgba(161, 0, 255, 0.08);
-    }
-
-    .wos-kpi-card.kpi-accent {
-        border-top-color: var(--accent);
-    }
-
-.wos-kpi-number {
-    font-size: 2rem;
-    font-weight: 800;
-    line-height: 1.1;
-    font-family: Consolas, monospace;
-}
-
-.wos-kpi-label {
-    font-size: 0.78rem;
+h1, h2, h3, h4 {
+    font-family: var(--sd-sans);
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--ink-muted);
+    letter-spacing: -0.02em;
 }
 
-/* Content Cards */
-.wos-card {
-    background: var(--bg-surface);
-    border: 1.5px solid var(--border-color);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+/* Kursives lila Wort in Überschriften: <h1>Chaos, aber <em>sauber sortiert.</em></h1> */
+h1 em, h2 em, .sd-serif {
+    font-family: var(--sd-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--sd-akzent);
 }
 
-.wos-card-header {
-    border-bottom: 1.5px solid var(--border-color);
-    padding-bottom: 0.85rem;
-    margin-bottom: 1.25rem;
+.sd-akzent { color: var(--sd-akzent); }
+
+/* ---------- Rahmen & Raster ---------- */
+
+.sd-rahmen {
+    max-width: 1240px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.sd-meta,
+.sd-footer {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .5rem;
+    font-family: var(--sd-mono);
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--sd-muted);
+    padding: .9rem 0;
+}
+
+.sd-footer {
+    border-top: 1px solid var(--sd-ink);
+    margin-top: auto;
+}
+.sd-footer a { color: var(--sd-muted); }
+.sd-footer a:hover { color: var(--sd-akzent); }
+
+/* ---------- Header / Navigation ---------- */
+
+.sd-header {
+    display: flex;
+    align-items: stretch;
+    border-top: 1px solid var(--sd-linie);
+    border-bottom: 1px solid var(--sd-linie);
+    background: var(--sd-bg);
+}
+
+.sd-brand {
+    display: flex;
     align-items: center;
-}
-
-/* Buttons */
-.btn-accent {
-    background-color: var(--accent);
-    color: #FFFFFF;
+    padding: 0 1.5rem 0 .75rem;
     font-weight: 700;
-    border: none;
-    padding: 0.55rem 1.15rem;
+    font-size: 1.1rem;
+    color: var(--sd-ink);
+    border-right: 1px solid var(--sd-linie);
+    white-space: nowrap;
+}
+.sd-brand:hover { color: var(--sd-ink); }
+
+.sd-nav {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
 }
 
-    .btn-accent:hover {
-        background-color: var(--accent-hover);
-        color: #FFFFFF;
-    }
-
-/* Status & Priority Badges */
-.badge-status-offen {
-    background-color: #DBEAFE;
-    color: #1E40AF;
-    border: 1px solid #93C5FD;
+.sd-nav-link {
+    display: flex;
+    align-items: center;
+    padding: 1.1rem 1.25rem;
+    font-family: var(--sd-mono);
+    font-size: .72rem;
+    color: var(--sd-ink);
+    border-right: 1px solid var(--sd-linie);
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+}
+.sd-nav-link:hover { color: var(--sd-akzent); }
+.sd-nav-link.aktiv {
+    color: var(--sd-akzent);
+    border-bottom-color: var(--sd-akzent);
 }
 
-.badge-status-arbeit {
-    background-color: #FEF3C7;
-    color: #92400E;
-    border: 1px solid #FCD34D;
+.sd-melden {
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    background: var(--sd-akzent);
+    color: #fff;
+    font-family: var(--sd-mono);
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    white-space: nowrap;
+}
+.sd-melden:hover { background: var(--sd-ink); color: #fff; }
+
+/* ---------- Inhalt ---------- */
+
+.sd-main {
+    padding: 2.5rem .75rem 3rem;
 }
 
-.badge-status-abgeschlossen {
-    background-color: #DCFCE7;
-    color: #166534;
-    border: 1px solid #86EFAC;
+.sd-main > h1 { font-size: 2.6rem; margin-bottom: 1.5rem; }
+
+/* Kleines Mono-Label: <div class="sd-label">01 / FILTER</div> */
+.sd-label {
+    font-family: var(--sd-mono);
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--sd-muted);
+}
+.sd-label-akzent { color: var(--sd-akzent); }
+
+/* Panels mit Rasterlinien */
+.sd-panel {
+    border: 1px solid var(--sd-linie);
+    background: var(--sd-bg);
+    padding: 1.5rem;
 }
 
-.badge-prio-hoch {
-    background-color: #FEE2E2;
-    color: #991B1B;
-    border: 1px solid #FCA5A5;
+/* Kennzahl-Kachel (Dashboard) */
+.sd-stat { border-right: 1px solid var(--sd-linie); padding: 1.25rem; }
+.sd-stat-zahl { font-size: 3rem; font-weight: 700; line-height: 1; }
+.sd-stat-titel { font-weight: 500; margin-top: .4rem; }
+
+/* ---------- Buttons (überschreibt Bootstrap) ---------- */
+
+.btn {
+    border-radius: 0;
+    font-family: var(--sd-mono);
+    font-size: .74rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    padding: .65rem 1.2rem;
 }
 
-.badge-prio-mittel {
-    background-color: #F3E8FF;
-    color: #6B21A8;
-    border: 1px solid #D8B4FE;
+.btn-primary, .btn-dark {
+    background: var(--sd-ink);
+    border-color: var(--sd-ink);
+    color: #fff;
+}
+.btn-primary:hover, .btn-dark:hover {
+    background: var(--sd-akzent);
+    border-color: var(--sd-akzent);
+    color: #fff;
 }
 
-.badge-prio-niedrig {
-    background-color: #F3F4F6;
-    color: #374151;
-    border: 1px solid #D1D5DB;
+.btn-akzent {
+    background: var(--sd-akzent);
+    border-color: var(--sd-akzent);
+    color: #fff;
+}
+.btn-akzent:hover { background: var(--sd-ink); border-color: var(--sd-ink); color: #fff; }
+
+.btn-outline-dark, .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--sd-ink);
+    color: var(--sd-ink);
+}
+.btn-outline-dark:hover, .btn-secondary:hover { background: var(--sd-ink); color: #fff; }
+
+.btn-outline-akzent {
+    background: transparent;
+    border: 1px solid var(--sd-akzent);
+    color: var(--sd-akzent);
+}
+.btn-outline-akzent:hover { background: var(--sd-akzent); color: #fff; }
+
+.btn:focus, .btn:active:focus, .form-control:focus, .form-select:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 2px var(--sd-akzent-hell);
+    border-color: var(--sd-akzent);
 }
 
-/* Lock Banner for Closed Tickets */
-.wos-lock-banner {
-    background-color: #FFFBEB;
-    border: 2px solid #F59E0B;
-    border-left: 6px solid #D97706;
+/* ---------- Formulare ---------- */
+
+.form-label, .control-label {
+    font-family: var(--sd-mono);
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: .35rem;
+}
+
+.form-control, .form-select {
+    border-radius: 0;
+    border: 1px solid var(--sd-linie);
+    background-color: var(--sd-flaeche);
+    font-family: var(--sd-sans);
+    padding: .6rem .75rem;
+}
+
+.form-control::placeholder { color: #A9A59B; }
+
+.form-group { margin-bottom: 1.1rem; }
+
+.form-check-input:checked {
+    background-color: var(--sd-akzent);
+    border-color: var(--sd-akzent);
+}
+
+/* Validierung */
+.input-validation-error,
+.form-control.input-validation-error,
+.form-select.input-validation-error {
+    border-color: var(--sd-fehler);
+    background-color: #FFF5F6;
+}
+
+.field-validation-error,
+.text-danger,
+.validation-summary-errors {
+    color: var(--sd-fehler) !important;
+    font-family: var(--sd-mono);
+    font-size: .7rem;
+}
+.field-validation-error::before { content: "[FEHLER] "; }
+
+.validation-summary-errors ul { padding-left: 0; list-style: none; margin: 0; }
+
+/* ---------- Tabellen ---------- */
+
+.table {
+    --bs-table-bg: transparent;
+    border-top: 1px solid var(--sd-ink);
+    margin-bottom: 0;
+}
+
+.table > thead th {
+    font-family: var(--sd-mono);
+    font-size: .68rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--sd-muted);
+    border-bottom: 1px solid var(--sd-linie);
+    padding: .9rem .75rem;
+}
+
+.table > tbody td {
+    border-bottom: 1px solid var(--sd-linie);
+    padding: 1rem .75rem;
+    vertical-align: middle;
+}
+
+.table > tbody tr:hover td { background: var(--sd-flaeche); }
+
+/* Aktions-Links in Tabellen: EDIT > / DETAILS > / DELETE > */
+.sd-aktionen a {
+    display: block;
+    font-family: var(--sd-mono);
+    font-size: .68rem;
+    text-transform: uppercase;
+    line-height: 1.6;
+}
+
+/* ---------- Badges (Priorität / Status) ---------- */
+
+.sd-badge {
+    display: inline-block;
+    font-family: var(--sd-mono);
+    font-size: .66rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: .2rem .5rem;
+    border: 1px solid var(--sd-ink);
+    white-space: nowrap;
+}
+
+/* Priorität */
+.sd-prio-hoch    { border-color: var(--sd-akzent); color: var(--sd-akzent); }
+.sd-prio-hoch::before { content: "● "; }
+.sd-prio-mittel  { border-color: var(--sd-ink); }
+.sd-prio-niedrig { border-color: var(--sd-linie); color: var(--sd-muted); }
+
+/* Status */
+.sd-status-offen        { border-color: var(--sd-ink); }
+.sd-status-bearbeitung  { border-color: var(--sd-akzent); background: var(--sd-akzent-hell); color: var(--sd-akzent); }
+.sd-status-abgeschlossen { border-color: var(--sd-linie); color: var(--sd-muted); }
+.sd-status-abgeschlossen::before { content: "✓ "; }
+
+/* Hinweisbox (z. B. Geschäftsregel) */
+.sd-hinweis {
+    border-left: 3px solid var(--sd-akzent);
+    background: var(--sd-flaeche);
     padding: 1rem 1.25rem;
+}
+
+/* dl-Listen aus den Details-Seiten */
+dl.row dt {
+    font-family: var(--sd-mono);
+    font-size: .7rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--sd-muted);
+    padding-top: .6rem;
+    padding-bottom: .6rem;
+    border-bottom: 1px solid var(--sd-linie);
+}
+dl.row dd {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid var(--sd-linie);
+}
+
+hr { border-color: var(--sd-linie); opacity: 1; }
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 992px) {
+    .sd-header { flex-wrap: wrap; }
+    .sd-brand { width: 100%; padding: 1rem .75rem; border-right: none; border-bottom: 1px solid var(--sd-linie); }
+    .sd-melden { width: 100%; padding: 1rem; justify-content: center; }
+    .sd-main > h1 { font-size: 2rem; }
+}
+
+/* =========================================================
+   Seiten-Bausteine (Übersichten, Formulare, Karten)
+   ========================================================= */
+
+.sd-mono { font-family: var(--sd-mono); }
+.sd-klein { font-size: .78rem; color: var(--sd-muted); }
+
+/* Große Hero-Überschrift auf Übersichtsseiten */
+.sd-hero-titel {
+    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+    line-height: 1.05;
+    margin: .6rem 0 1rem;
+}
+.sd-intro {
+    color: var(--sd-muted);
+    max-width: 720px;
+    margin-bottom: 2rem;
+}
+
+/* Kopfbereich auf Unterseiten: Titel links, Button rechts */
+.sd-kopf {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--sd-linie);
+}
+.sd-seiten-titel { font-size: 2.2rem; margin: .4rem 0 0; }
+
+/* Formular-Container */
+.sd-formular {
+    max-width: 760px;
+    border: 1px solid var(--sd-linie);
+    padding: 2rem;
+    background: var(--sd-bg);
+}
+.sd-formular-aktionen {
+    display: flex;
+    justify-content: flex-end;
+    gap: .75rem;
+    margin-top: 1.5rem;
+}
+
+/* Kategorie-Karten */
+.sd-karten {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    border-top: 1px solid var(--sd-linie);
+    border-left: 1px solid var(--sd-linie);
+}
+.sd-karte {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    border-right: 1px solid var(--sd-linie);
+    border-bottom: 1px solid var(--sd-linie);
+    min-height: 260px;
+}
+.sd-karte-titel { font-size: 1.6rem; margin: .9rem 0 .8rem; }
+.sd-karte-text { color: var(--sd-muted); flex: 1; }
+.sd-karte-aktionen {
+    font-family: var(--sd-mono);
+    font-size: .68rem;
+    text-transform: uppercase;
+    display: flex;
+    gap: .4rem;
+    flex-wrap: wrap;
+}
+.sd-karte-aktionen span { color: var(--sd-linie); }
+.sd-leer { grid-column: 1 / -1; min-height: auto; }
+
+/* Leiste "Neue Kategorie anlegen" */
+.sd-neu-leiste {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border: 1px solid var(--sd-linie);
+    border-top: none;
+}
+.sd-neu-feld { padding: 1.5rem; border-right: 1px solid var(--sd-linie); }
+.sd-neu-feld:last-child { border-right: none; }
+.sd-neu-feld .sd-label { margin-bottom: 1rem; }
+.sd-neu-aktion .sd-klein { margin: .9rem 0 0; }
+
+/* Zweispaltig: Tabelle + Seitenformular (Mitarbeiter) */
+.sd-split {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    gap: 2rem;
+    align-items: start;
+}
+
+@media (max-width: 992px) {
+    .sd-split, .sd-neu-leiste { grid-template-columns: 1fr; }
+    .sd-neu-feld { border-right: none; border-bottom: 1px solid var(--sd-linie); }
+}
+
+/* =========================================================
+   Ticket-Seiten, Kennzahlen, Filter, Meldungen
+   ========================================================= */
+
+/* Kennzahl-Kacheln */
+.sd-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--sd-linie);
+}
+.sd-stats .sd-stat { border-right: 1px solid var(--sd-linie); }
+.sd-stats .sd-stat:last-child { border-right: none; border-bottom: 3px solid var(--sd-akzent); }
+.sd-stats .sd-stat .sd-label { margin-top: .3rem; }
+
+/* Filterleiste */
+.sd-filter {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.4fr auto;
+    gap: 1rem;
+    align-items: end;
+    border: 1px solid var(--sd-linie);
+    padding: 1.25rem;
     margin-bottom: 1.5rem;
 }
+.sd-filter-aktionen { display: flex; flex-direction: column; gap: .4rem; text-align: center; min-width: 180px; }
 
-/* DEFAULT = DEEP DARK MODE (Matching your Figma design) */
-:root, [data-bs-theme="dark"] {
-    --accent: #A100FF;
-    --accent-hover: #C975FF;
-    --bg-page: #000000;
-    --bg-surface: #08080C;
-    --ink: #FFFFFF;
-    --ink-muted: #8E8E9E;
-    --border-color: #20202A;
-    --border-strong: #333344;
+/* Tickettabelle */
+.sd-ticket-titel { color: var(--sd-ink); font-weight: 700; }
+.sd-ticket-titel:hover { color: var(--sd-akzent); }
+.sd-kurz { max-width: 360px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sd-zeile-zu td { color: var(--sd-muted); }
+.sd-zeile-zu .sd-ticket-titel { color: var(--sd-muted); }
+
+/* Zweispaltige Formularseite: Hinweise links, Formular rechts */
+.sd-zwei {
+    display: grid;
+    grid-template-columns: minmax(240px, 1fr) minmax(0, 2fr);
+    gap: 2.5rem;
+    align-items: start;
+}
+.sd-zwei .sd-formular { max-width: none; }
+.sd-formular-breit { max-width: 980px; }
+
+/* Segment-Auswahl (Priorität / Status) */
+.sd-segment { display: flex; border: 1px solid var(--sd-linie); }
+.sd-segment-btn {
+    flex: 1;
+    text-align: center;
+    padding: .6rem .5rem;
+    cursor: pointer;
+    font-family: var(--sd-mono);
+    font-size: .7rem;
+    text-transform: uppercase;
+    border-right: 1px solid var(--sd-linie);
+    background: var(--sd-flaeche);
+    margin: 0;
+}
+.sd-segment-btn:last-of-type { border-right: none; }
+.btn-check:checked + .sd-segment-btn {
+    background: var(--sd-akzent-hell);
+    color: var(--sd-akzent);
+    box-shadow: inset 0 0 0 1px var(--sd-akzent);
+}
+.btn-check:checked + .sd-segment-btn::before { content: "● "; }
+
+/* Pre-Check-Checkbox */
+.sd-precheck {
+    display: flex;
+    gap: .75rem;
+    align-items: flex-start;
+    border: 1px solid var(--sd-linie);
+    padding: 1rem;
+    margin-top: .5rem;
+}
+.sd-precheck .form-check-input { margin-top: .2rem; flex-shrink: 0; }
+
+/* Gesperrtes (abgeschlossenes) Ticket */
+.sd-gesperrt fieldset { opacity: .6; }
+.sd-gesperrt-hinweis {
+    font-family: var(--sd-mono);
+    font-size: .72rem;
+    text-transform: uppercase;
+    border: 1px solid var(--sd-linie);
+    padding: .6rem .8rem;
+    color: var(--sd-muted);
 }
 
-/* OPTIONAL LIGHT MODE OVERRIDE */
-[data-bs-theme="light"] {
-    --accent: #A100FF;
-    --accent-hover: #7B00C4;
-    --bg-page: #F7F6F2;
-    --bg-surface: #FFFFFF;
-    --ink: #0A0A0D;
-    --ink-muted: #5C5C6B;
-    --border-color: #E2E2EA;
-    --border-strong: #121217;
+/* Erfolgs- und Fehlermeldungen */
+.sd-flash {
+    font-family: var(--sd-mono);
+    font-size: .78rem;
+    padding: .8rem 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid;
 }
+.sd-flash-ok { border-color: var(--sd-akzent); background: var(--sd-akzent-hell); color: var(--sd-akzent); }
+.sd-flash-fehler { border-color: var(--sd-fehler); background: #FFF5F6; color: var(--sd-fehler); }
 
-body {
-    background-color: var(--bg-page);
-    color: var(--ink);
-    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-    margin-bottom: 60px;
-}
-
-/* Crisp grid borders */
-.wos-card, .wos-kpi-card {
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-color);
-    color: var(--ink);
-}
-
-/* Neon numbers in dark mode */
-[data-bs-theme="dark"] .wos-kpi-number {
-    color: var(--accent) !important;
+@media (max-width: 992px) {
+    .sd-stats { grid-template-columns: repeat(2, 1fr); }
+    .sd-filter, .sd-zwei { grid-template-columns: 1fr; }
 }

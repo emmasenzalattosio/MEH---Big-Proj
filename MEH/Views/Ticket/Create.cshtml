@@ -1,42 +1,86 @@
 @model MEH.Models.Ticket
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Neues Ticket";
 }
 
-<h1>Create</h1>
-
-<h4>Ticket</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="form-group">
-                <label asp-for="Titel" class="control-label"></label>
-                <input asp-for="Titel" class="form-control" />
-                <span asp-validation-for="Titel" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Beschreibung" class="control-label"></label>
-                <input asp-for="Beschreibung" class="form-control" />
-                <span asp-validation-for="Beschreibung" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="ErstelltAm" class="control-label"></label>
-                <input asp-for="ErstelltAm" class="form-control" />
-                <span asp-validation-for="ErstelltAm" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="sd-kopf">
+    <div>
+        <div class="sd-label">Seite 02 // Views/Ticket/Create.cshtml</div>
+        <h1 class="sd-seiten-titel">Neues <em>Support-Ticket</em> erfassen</h1>
     </div>
+    <a asp-action="Index" class="btn btn-outline-dark">&lt; Abbrechen &amp; zurück zur Liste</a>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="sd-zwei">
+    <!-- Linke Spalte: Hinweise -->
+    <aside>
+        <div class="sd-label sd-label-akzent">01 // Erfassung</div>
+        <h2 class="sd-seiten-titel mt-2">Erst beschreiben, <em>dann fluchen.</em></h2>
+        <p class="sd-klein mt-3">Je genauer die Fehlermeldung, desto seltener müssen wir fragen, ob das Kabel wirklich steckt.</p>
+        <div class="sd-hinweis mt-4">
+            <div class="sd-label">Hinweise zur Erfassung</div>
+            <p class="sd-klein mt-2 mb-0">Mit * markierte Felder sind Pflichtfelder. Die Eingaben werden serverseitig geprüft. Erstelldatum und Status „Offen“ setzt das System automatisch.</p>
+        </div>
+    </aside>
+
+    <!-- Rechte Spalte: Formular -->
+    <form asp-action="Create" class="sd-formular">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="Titel" class="form-label">Aussagekräftiger Titel *</label>
+            <input asp-for="Titel" class="form-control" placeholder="z. B. Netzwerkdrucker im 3. OG druckt nicht" />
+            <span asp-validation-for="Titel" class="text-danger"></span>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6 form-group">
+                <label asp-for="KategorieID" class="form-label">Kategorie *</label>
+                <select asp-for="KategorieID" class="form-select" asp-items="ViewBag.Kategorien">
+                    <option value="">– bitte wählen –</option>
+                </select>
+                <span asp-validation-for="KategorieID" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 form-group">
+                <label asp-for="MitarbeiterID" class="form-label">Zuständiger Mitarbeiter</label>
+                <select asp-for="MitarbeiterID" class="form-select" asp-items="ViewBag.Mitarbeiter">
+                    <option value="">– noch offen –</option>
+                </select>
+                <span asp-validation-for="MitarbeiterID" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <span class="form-label d-block">Priorität *</span>
+            <div class="sd-segment">
+                @foreach (var p in Enum.GetValues<TicketPrioritaet>())
+                {
+                    <input type="radio" class="btn-check" asp-for="Prioritaet" value="@p" id="prio-@p" />
+                    <label class="sd-segment-btn" for="prio-@p">@p.Anzeige()</label>
+                }
+            </div>
+            <span asp-validation-for="Prioritaet" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Beschreibung" class="form-label">Problembeschreibung *</label>
+            <textarea asp-for="Beschreibung" class="form-control" rows="5" placeholder="Welches Gerät/Programm? Welche Fehlermeldung? Seit wann?"></textarea>
+            <span asp-validation-for="Beschreibung" class="text-danger"></span>
+        </div>
+
+        <div class="sd-precheck">
+            <input asp-for="HatNeuGestartet" class="form-check-input" />
+            <label asp-for="HatNeuGestartet" class="mb-0"><strong>Pre-Check:</strong> Ich bestätige, dass das Gerät bereits einmal neu gestartet wurde und alle Kabel fest sitzen.</label>
+        </div>
+
+        <div class="sd-formular-aktionen">
+            <a asp-action="Index" class="btn btn-outline-dark">Abbrechen</a>
+            <button type="submit" class="btn btn-akzent">Ticket speichern &amp; zur Übersicht &gt;</button>
+        </div>
+    </form>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

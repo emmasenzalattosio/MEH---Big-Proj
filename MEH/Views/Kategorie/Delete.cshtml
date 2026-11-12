@@ -1,34 +1,38 @@
 @model MEH.Models.Kategorie
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Kategorie löschen";
 }
 
-<h1>Delete</h1>
+<div class="sd-kopf">
+    <div>
+        <div class="sd-label">Seite 05 // KAT-@Model.ID.ToString("00")</div>
+        <h1 class="sd-seiten-titel">Kategorie <em>löschen?</em></h1>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-dark">&lt; Zurück zur Übersicht</a>
+</div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>MEH.Models.Kategorie</h4>
-    <hr />
+<div class="sd-formular">
+    <div class="sd-hinweis mb-4">
+        <div class="sd-label sd-label-akzent">■ Datenbank-Regel // 1:n Referenzschutz</div>
+        <p class="mb-0 mt-2">Kategorien, denen noch Tickets zugeordnet sind, können nicht gelöscht werden.
+            @if (Model.Tickets.Any())
+            {
+                <br /><strong>Dieser Kategorie sind noch @Model.Tickets.Count Ticket(s) zugeordnet – das Löschen wird abgelehnt.</strong>
+            }
+        </p>
+    </div>
+
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+        <dt class="col-sm-3">Name</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+        <dt class="col-sm-3">Kurzbeschreibung</dt>
+        <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.Beschreibung) ? "–" : Model.Beschreibung)</dd>
     </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Beschreibung)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Beschreibung)
-        </dd>
-    </dl>
-    <form asp-action="Delete">
+
+    <form asp-action="Delete" class="sd-formular-aktionen">
         <input type="hidden" asp-for="ID" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index" class="btn btn-outline-dark">Abbrechen</a>
+        <button type="submit" class="btn btn-dark">Endgültig löschen</button>
     </form>
 </div>
