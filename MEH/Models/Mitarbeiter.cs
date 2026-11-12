@@ -29,6 +29,7 @@ namespace MEH.Models
         [Required(ErrorMessage = "Bitte Fachbereich eingeben")]
         [Display(Name = "Fachbereich")]
         public string Fachbereich { get; set; } = "";
+        public MitarbeiterRolle Rolle { get; set; }
 
 
 
