@@ -1,38 +1,48 @@
 @model MEH.Models.Ticket
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Ticket " + Model.Nummer();
+    bool gesperrt = Model.Status == TicketStatus.Schluss;
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Ticket</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Titel)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Titel)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Beschreibung)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Beschreibung)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ErstelltAm)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ErstelltAm)
-        </dd>
-    </dl>
+<div class="sd-kopf">
+    <div>
+        <div class="sd-label">Seite 02 // @Model.Nummer() // @(Model.Kategorie?.Name ?? "ohne Kategorie")</div>
+        <h1 class="sd-seiten-titel">@Model.Titel</h1>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-dark">&lt; Zurück zur Liste</a>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="sd-formular sd-formular-breit">
+    <div class="mb-3">
+        <span class="sd-badge @Model.Prioritaet.BadgeKlasse()">Prio: @Model.Prioritaet.Anzeige()</span>
+        <span class="sd-badge @Model.Status.BadgeKlasse()">@Model.Status.Anzeige()</span>
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Beschreibung</dt>
+        <dd class="col-sm-9">@Model.Beschreibung</dd>
+        <dt class="col-sm-3">Kategorie</dt>
+        <dd class="col-sm-9">@(Model.Kategorie?.Name ?? "–")</dd>
+        <dt class="col-sm-3">Zuständig</dt>
+        <dd class="col-sm-9">@(Model.Mitarbeiter?.Name ?? "– nicht zugewiesen –")</dd>
+        <dt class="col-sm-3">Erstellt am</dt>
+        <dd class="col-sm-9">@Model.ErstelltAm.ToString("dd.MM.yyyy HH:mm")</dd>
+        <dt class="col-sm-3">Pre-Check</dt>
+        <dd class="col-sm-9">@(Model.HatNeuGestartet ? "✓ Gerät wurde neu gestartet" : "✗ Noch nicht neu gestartet")</dd>
+    </dl>
+
+    <div class="sd-formular-aktionen">
+        <a asp-action="Delete" asp-route-id="@Model.ID" class="btn btn-outline-dark">Löschen</a>
+        @if (gesperrt)
+        {
+            <form asp-action="WiederOeffnen" asp-route-id="@Model.ID" method="post" class="d-inline">
+                <button type="submit" class="btn btn-outline-akzent">Ticket erneut öffnen</button>
+            </form>
+        }
+        else
+        {
+            <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-dark">Bearbeiten &gt;</a>
+        }
+    </div>
 </div>

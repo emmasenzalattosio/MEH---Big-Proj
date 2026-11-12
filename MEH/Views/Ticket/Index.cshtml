@@ -1,47 +1,146 @@
 @model IEnumerable<MEH.Models.Ticket>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Tickets";
+
+    int offen = (int)(ViewBag.OffenCount ?? 0);
+    int inArbeit = (int)(ViewBag.InArbeitCount ?? 0);
+    int erledigt = (int)(ViewBag.SchlussCount ?? 0);
+    int hoch = (int)(ViewBag.PrioHochCount ?? 0);
+
+    TicketStatus? gewaehlterStatus = ViewBag.SelectedStatus;
+    TicketPrioritaet? gewaehltePrio = ViewBag.SelectedPrio;
+    string? suche = ViewBag.Suche;
+    bool filterAktiv = gewaehlterStatus.HasValue || gewaehltePrio.HasValue || !string.IsNullOrWhiteSpace(suche);
 }
 
-<h1>Index</h1>
+<!-- Kopf -->
+<div class="sd-kopf">
+    <div>
+        <div class="sd-label">[ Zentrale Ticketverwaltung // Alle Anfragen ]</div>
+        <h1 class="sd-hero-titel mb-0">Chaos, aber <em>sauber sortiert.</em></h1>
+    </div>
+    <a asp-action="Create" class="btn btn-dark">+ Neues Ticket erstellen &gt;</a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<!-- Kennzahlen -->
+<div class="sd-stats mb-4">
+    <div class="sd-stat">
+        <div class="sd-stat-zahl">@offen.ToString("00")</div>
+        <div class="sd-stat-titel">Offene Tickets</div>
+        <div class="sd-label">Warten auf den ersten Handgriff</div>
+    </div>
+    <div class="sd-stat">
+        <div class="sd-stat-zahl">@inArbeit.ToString("00")</div>
+        <div class="sd-stat-titel">In Bearbeitung</div>
+        <div class="sd-label">Jemand arbeitet daran</div>
+    </div>
+    <div class="sd-stat">
+        <div class="sd-stat-zahl">@erledigt.ToString("00")</div>
+        <div class="sd-stat-titel">Abgeschlossen</div>
+        <div class="sd-label">Gelöst. Nicht nur geschlossen.</div>
+    </div>
+    <div class="sd-stat">
+        <div class="sd-stat-zahl sd-akzent">@hoch.ToString("00")</div>
+        <div class="sd-stat-titel">Hohe Priorität</div>
+        <div class="sd-label">Offen und dringend</div>
+    </div>
+</div>
+
+<!-- Filter (GET, damit die Filter in der URL stehen) -->
+<form asp-action="Index" method="get" class="sd-filter">
+    <div>
+        <label class="form-label" for="statusFilter">Filter // Status</label>
+        <select class="form-select" id="statusFilter" name="statusFilter">
+            <option value="">Alle Status</option>
+            @foreach (var s in Enum.GetValues<TicketStatus>())
+            {
+                <option value="@s" selected="@(gewaehlterStatus == s)">@s.Anzeige()</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label class="form-label" for="prioFilter">Filter // Priorität</label>
+        <select class="form-select" id="prioFilter" name="prioFilter">
+            <option value="">Alle Prioritäten</option>
+            @foreach (var p in Enum.GetValues<TicketPrioritaet>())
+            {
+                <option value="@p" selected="@(gewaehltePrio == p)">@p.Anzeige()</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label class="form-label" for="suche">Suche // Volltext</label>
+        <input class="form-control" id="suche" name="suche" value="@suche" placeholder="Titel oder Beschreibung …" />
+    </div>
+    <div class="sd-filter-aktionen">
+        <button type="submit" class="btn btn-dark w-100">Filter anwenden &gt;</button>
+        @if (filterAktiv)
+        {
+            <a asp-action="Index" class="sd-klein">Zurücksetzen</a>
+        }
+    </div>
+</form>
+
+<!-- Tabelle -->
+<table class="table sd-ticket-tabelle">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Titel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Beschreibung)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ErstelltAm)
-            </th>
-            <th></th>
+            <th>ID //</th>
+            <th>Titel &amp; Kurzbeschreibung</th>
+            <th>Kategorie</th>
+            <th>Priorität</th>
+            <th>Status</th>
+            <th>Zuständig (IT)</th>
+            <th>Erstellt am</th>
+            <th>Aktionen</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.Titel)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Beschreibung)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.ErstelltAm)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var t in Model)
+        {
+            <tr class="@(t.Status == TicketStatus.Schluss ? "sd-zeile-zu" : "")">
+                <td class="sd-mono sd-klein">@t.Nummer()</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@t.ID" class="sd-ticket-titel">@t.Titel</a>
+                    <div class="sd-klein sd-kurz">@t.Beschreibung</div>
+                </td>
+                <td class="sd-mono sd-klein">[@(t.Kategorie?.Name ?? "–")]</td>
+                <td><span class="sd-badge @t.Prioritaet.BadgeKlasse()">@t.Prioritaet.Anzeige()</span></td>
+                <td><span class="sd-badge @t.Status.BadgeKlasse()">@t.Status.Anzeige()</span></td>
+                <td>
+                    @if (t.Mitarbeiter != null)
+                    {
+                        @t.Mitarbeiter.Name
+                    }
+                    else
+                    {
+                        <span class="sd-klein">– nicht zugewiesen –</span>
+                    }
+                </td>
+                <td class="sd-mono sd-klein">@t.ErstelltAm.ToString("dd.MM.yyyy") <br /> @t.ErstelltAm.ToString("HH:mm")</td>
+                <td class="sd-aktionen">
+                    @if (t.Status == TicketStatus.Schluss)
+                    {
+                        <span class="sd-klein">Gesperrt</span>
+                    }
+                    else
+                    {
+                        <a asp-action="Edit" asp-route-id="@t.ID">Edit &gt; /</a>
+                    }
+                    <a asp-action="Details" asp-route-id="@t.ID">Details &gt; /</a>
+                    <a asp-action="Delete" asp-route-id="@t.ID">Delete &gt;</a>
+                </td>
+            </tr>
+        }
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="8" class="sd-klein py-4">
+                    @(filterAktiv ? "Keine Tickets für diesen Filter gefunden." : "Noch keine Tickets vorhanden. Leg oben das erste an.")
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<div class="sd-label mt-2 text-end">Zeige @Model.Count() Ticket(s)</div>

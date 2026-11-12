@@ -1,42 +1,120 @@
 @model MEH.Models.Ticket
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Ticket bearbeiten";
+    // Geschäftsregel: Abgeschlossene Tickets sind gesperrt, bis sie wieder geöffnet werden
+    bool gesperrt = Model.Status == TicketStatus.Schluss;
 }
 
-<h1>Edit</h1>
+<div class="sd-kopf">
+    <div>
+        <div class="sd-label">Seite 02 // @Model.Nummer() // Erstellt am @Model.ErstelltAm.ToString("dd.MM.yyyy HH:mm") (automatisch)</div>
+        <h1 class="sd-seiten-titel">Ticket <em>bearbeiten</em></h1>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-dark">&lt; Zurück zur Liste</a>
+</div>
 
-<h4>Ticket</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
+<div class="sd-zwei">
+    <!-- Linke Spalte: Geschäftsregel -->
+    <aside>
+        <div class="sd-label">[ Protokoll // Ticketbearbeitung ]</div>
+        <h2 class="sd-seiten-titel mt-2">Erst beschreiben, <em>dann fluchen.</em></h2>
+        <p class="sd-klein mt-3">Je genauer die Fehlermeldung, desto seltener müssen wir fragen, ob das Kabel wirklich steckt.</p>
+
+        <div class="sd-hinweis mt-4">
+            <div class="sd-label sd-label-akzent">■ Geschäftsregel // Schreibschutz</div>
+            <p class="mt-2">Abgeschlossene Tickets sind für inhaltliche Änderungen gesperrt und können erst nach einer erneuten Öffnung bearbeitet werden.</p>
+
+            @if (gesperrt)
+            {
+                <form asp-action="WiederOeffnen" asp-route-id="@Model.ID" method="post">
+                    <button type="submit" class="btn btn-outline-akzent w-100">[ Ticket erneut öffnen / reaktivieren ]</button>
+                </form>
+            }
+            else
+            {
+                <p class="sd-klein mb-0">Dieses Ticket ist offen und kann bearbeitet werden.</p>
+            }
+        </div>
+    </aside>
+
+    <!-- Rechte Spalte: Formular -->
+    <form asp-action="Edit" class="sd-formular @(gesperrt ? "sd-gesperrt" : "")">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ID" />
+        <input type="hidden" asp-for="ErstelltAm" asp-format="{0:yyyy-MM-ddTHH:mm:ss}" />
+
+        @if (gesperrt)
+        {
+            <div class="sd-gesperrt-hinweis mb-3">✓ Abgeschlossen – nur lesbar. Zum Bearbeiten links „Ticket erneut öffnen“.</div>
+        }
+
+        <fieldset disabled="@gesperrt">
             <div class="form-group">
-                <label asp-for="Titel" class="control-label"></label>
+                <label asp-for="Titel" class="form-label">01 // Titel der Störung *</label>
                 <input asp-for="Titel" class="form-control" />
                 <span asp-validation-for="Titel" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Beschreibung" class="control-label"></label>
-                <input asp-for="Beschreibung" class="form-control" />
+                <label asp-for="Beschreibung" class="form-label">02 // Problem- &amp; Fehlerbeschreibung *</label>
+                <textarea asp-for="Beschreibung" class="form-control" rows="5"></textarea>
                 <span asp-validation-for="Beschreibung" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ErstelltAm" class="control-label"></label>
-                <input asp-for="ErstelltAm" class="form-control" />
-                <span asp-validation-for="ErstelltAm" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+            <div class="row g-3">
+                <div class="col-md-6 form-group">
+                    <label asp-for="KategorieID" class="form-label">03 // Kategorie *</label>
+                    <select asp-for="KategorieID" class="form-select" asp-items="ViewBag.Kategorien">
+                        <option value="">– bitte wählen –</option>
+                    </select>
+                    <span asp-validation-for="KategorieID" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 form-group">
+                    <span class="form-label d-block">04 // Priorität *</span>
+                    <div class="sd-segment">
+                        @foreach (var p in Enum.GetValues<TicketPrioritaet>())
+                        {
+                            <input type="radio" class="btn-check" asp-for="Prioritaet" value="@p" id="prio-@p" />
+                            <label class="sd-segment-btn" for="prio-@p">@p.Anzeige()</label>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6 form-group">
+                    <span class="form-label d-block">05 // Bearbeitungsstatus *</span>
+                    <div class="sd-segment">
+                        @foreach (var s in Enum.GetValues<TicketStatus>())
+                        {
+                            <input type="radio" class="btn-check" asp-for="Status" value="@s" id="status-@s" />
+                            <label class="sd-segment-btn" for="status-@s">@s.Anzeige()</label>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label asp-for="MitarbeiterID" class="form-label">06 // Zuständiger Mitarbeiter</label>
+                    <select asp-for="MitarbeiterID" class="form-select" asp-items="ViewBag.Mitarbeiter">
+                        <option value="">– nicht zugewiesen –</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="sd-precheck">
+                <input asp-for="HatNeuGestartet" class="form-check-input" />
+                <label asp-for="HatNeuGestartet" class="mb-0"><strong>Pre-Check:</strong> Gerät wurde bereits neu gestartet.</label>
+            </div>
+        </fieldset>
+
+        <div class="sd-formular-aktionen">
+            <a asp-action="Index" class="btn btn-outline-dark">Abbrechen &amp; zurück</a>
+            @if (!gesperrt)
+            {
+                <button type="submit" class="btn btn-dark">Ticket verbindlich speichern &gt;</button>
+            }
+        </div>
+    </form>
 </div>
 
 @section Scripts {
