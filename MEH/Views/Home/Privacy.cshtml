@@ -1,37 +1,102 @@
-﻿@{
-    ViewData["Title"] = "Datenschutz";
+@{
+    ViewData["Title"] = "Datenschutz & Transparenz";
 }
 
-<div class="sd-label">[ Rechtliches // Datenschutzhinweise ]</div>
-<h1 class="sd-hero-titel">Wir speichern Ihre Daten. <em>Nicht Ihre Flüche.</em></h1>
-<p class="sd-intro">ServiceDesk ist ein internes Werkzeug der Westfalen Office Solutions GmbH. Es kennt Ihre Tickets – aber nicht, was Sie dabei über den Drucker im 3. OG gesagt haben.</p>
-
-<div class="sd-formular sd-formular-breit">
-    <dl class="row">
-        <dt class="col-sm-3">Wer ist verantwortlich?</dt>
-        <dd class="col-sm-9">Westfalen Office Solutions GmbH, IT-Abteilung, Standort Dortmund. Ja, genau die Leute, die fragen, ob Sie es schon mal neu gestartet haben.</dd>
-
-        <dt class="col-sm-3">Was wir speichern</dt>
-        <dd class="col-sm-9">
-            <strong>Mitarbeiter:</strong> Vorname, Nachname, E-Mail-Adresse, Fachbereich<br />
-            <strong>Tickets:</strong> Titel, Problembeschreibung, Kategorie, Priorität, Status, Erstellungsdatum, zuständiger Mitarbeiter
-        </dd>
-
-        <dt class="col-sm-3">Was wir nicht speichern</dt>
-        <dd class="col-sm-9">Ihren Puls beim dritten Papierstau. Ihre Meinung über Montage. Ihre Tastatur-Krümel.</dd>
-
-        <dt class="col-sm-3">Wozu?</dt>
-        <dd class="col-sm-9">Ausschließlich zur Erfassung und Bearbeitung interner IT-Supportanfragen und zur Zuweisung an zuständige Mitarbeiter. Kein Marketing, kein Tracking, keine Cookies außer den technisch notwendigen.</dd>
-
-        <dt class="col-sm-3">Wo liegen die Daten?</dt>
-        <dd class="col-sm-9">In einer internen SQL-Server-Datenbank im Firmennetz. Keine Weitergabe an Dritte – nicht mal an den Drucker.</dd>
-
-        <dt class="col-sm-3">Wie lange?</dt>
-        <dd class="col-sm-9">Nur so lange, wie sie für den Support gebraucht werden. Danach werden sie gelöscht. Endgültig. Ohne Papierkorb.</dd>
-
-        <dt class="col-sm-3">Ihre Rechte</dt>
-        <dd class="col-sm-9">Sie haben das Recht auf Auskunft, Berichtigung und Löschung Ihrer Daten. Wenden Sie sich dazu an die IT-Abteilung – ausnahmsweise auch telefonisch.</dd>
-    </dl>
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+    <div>
+        <div class="sd-squad-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            RECHTLICHES // DATENSCHUTZHINWEISE
+        </div>
+        <h1 class="sd-hero-titel mb-1">Wir speichern Ihre Daten. <em>Nicht Ihre Flüche.</em></h1>
+        <p class="sd-hero-unter mb-0">ServiceDesk ist ein internes Werkzeug der Westfalen Office Solutions GmbH. Es kennt Ihre Tickets – aber nicht, was Sie dabei über den Drucker im 3. OG gesagt haben.</p>
+    </div>
+    <a asp-controller="Ticket" asp-action="Index" class="sd-btn-outline-action">
+        &larr; Zurück zum Dashboard
+    </a>
 </div>
 
-<p class="sd-label mt-3">Stand: November 2026 // Version 1.0 // Geprüft von: Leuten mit Kaffee</p>
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+        <div class="sd-join-card mb-4">
+            
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">WER IST VERANTWORTLICH?</div>
+                        <div class="sd-detail-value">
+                            Westfalen Office Solutions GmbH, IT-Abteilung, Standort Dortmund.<br />
+                            <span class="text-secondary small">Ja, genau die Leute, die fragen, ob Sie es schon mal neu gestartet haben.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">WAS WIR SPEICHERN</div>
+                        <div class="sd-detail-value">
+                            <ul class="mb-0 ps-3 text-secondary small">
+                                <li><strong class="text-white">Mitarbeiter:</strong> Vorname, Nachname, E-Mail-Adresse, Fachbereich</li>
+                                <li><strong class="text-white">Tickets:</strong> Titel, Problembeschreibung, Kategorie, Priorität, Status, Erstellungsdatum, zuständiger Mitarbeiter</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">WAS WIR NICHT SPEICHERN</div>
+                        <div class="sd-detail-value text-secondary small">
+                            Ihren Puls beim dritten Papierstau. Ihre ehrliche Meinung über Montage. Ihre Tastatur-Krümel.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">WOZU WERDEN DIE DATEN VERWENDET?</div>
+                        <div class="sd-detail-value text-secondary small">
+                            Ausschließlich zur Erfassung und Bearbeitung interner IT-Supportanfragen und zur Zuweisung an zuständige Mitarbeiter. Kein Marketing, kein Tracking, keine Cookies außer den technisch notwendigen Sitzungsdaten.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">WO LIEGEN DIE DATEN?</div>
+                        <div class="sd-detail-value text-secondary small">
+                            In einer internen SQL-Server-Datenbank im Firmennetzwerk. Keine Weitergabe an Dritte – nicht einmal an den Drucker.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">WIE LANGE?</div>
+                        <div class="sd-detail-value text-secondary small">
+                            Nur so lange, wie sie für den Support und die SLA-Nachvollziehbarkeit gebraucht werden. Danach werden sie gelöscht. Endgültig. Ohne Papierkorb.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">IHRE RECHTE</div>
+                        <div class="sd-detail-value text-secondary small">
+                            Sie haben das Recht auf Auskunft, Berichtigung und Löschung Ihrer Daten. Wenden Sie sich dazu an die IT-Abteilung – ausnahmsweise auch telefonisch.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center flex-wrap gap-2 font-monospace text-muted small">
+                <span>STAND: NOVEMBER 2026 // VERSION 1.0</span>
+                <span>GEPRÜFT VON: LEUTEN MIT KAFFEE</span>
+            </div>
+
+        </div>
+    </div>
+</div>

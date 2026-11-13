@@ -1,25 +1,65 @@
-﻿@model ErrorViewModel
+@model ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "System-Störung // Error";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+    <div>
+        <div class="sd-squad-tag text-danger">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            SYSTEM-EXCEPTION // FEHLERPROTOKOLL
+        </div>
+        <h1 class="sd-hero-titel mb-1">Da ist etwas <span class="text-danger">schiefgelaufen.</span></h1>
+        <p class="sd-hero-unter mb-0">Bei der Verarbeitung der Anfrage ist ein interner Fehler aufgetreten.</p>
+    </div>
+    <a asp-controller="Ticket" asp-action="Index" class="sd-btn-outline-action">
+        &larr; Zurück zum Dashboard
+    </a>
+</div>
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="sd-join-card" style="border-color: rgba(239, 68, 68, 0.3);">
+            
+            <div class="sd-danger-shield mb-4">
+                <div class="sd-danger-shield-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="fw-bold text-white mb-1">Fehlerdiagnose</div>
+                    <div class="text-secondary small">
+                        Die Anfrage konnte nicht ordnungsgemäß abgeschlossen werden. Bitte prüfe das Fehlerprotokoll.
+                    </div>
+                </div>
+            </div>
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-    It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-    and restarting the app.
-</p>
+            @if (Model?.ShowRequestId == true)
+            {
+                <div class="sd-detail-item mb-4">
+                    <div class="sd-detail-label">REQUEST-ID (TRACE IDENTIFIER)</div>
+                    <div class="sd-detail-value font-monospace text-info">@Model.RequestId</div>
+                </div>
+            }
+
+            <div class="p-3 rounded text-secondary small" style="background: rgba(11, 15, 28, 0.6); border: 1px solid rgba(255, 255, 255, 0.06);">
+                <div class="text-white fw-semibold mb-1">Entwicklungsmodus-Hinweis:</div>
+                Im Entwicklungsmodus (<code class="text-info">ASPNETCORE_ENVIRONMENT=Development</code>) können detaillierte Stacktraces zur schnellen Fehlerbehebung eingesehen werden.
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <a asp-controller="Ticket" asp-action="Index" class="sd-btn-submit-crew">
+                    Zurück zum ServiceDesk &rarr;
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>

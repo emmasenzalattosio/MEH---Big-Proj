@@ -1,39 +1,63 @@
 @model MEH.Models.Kategorie
 
 @{
-    ViewData["Title"] = "Kategorie bearbeiten";
+    ViewData["Title"] = "Kategorie bearbeiten // KAT-" + Model.ID.ToString("00");
 }
 
-<div class="sd-kopf">
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
     <div>
-        <div class="sd-label">Seite 05 // KAT-@Model.ID.ToString("00")</div>
-        <h1 class="sd-seiten-titel">Kategorie <em>bearbeiten</em></h1>
+        <div class="sd-squad-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            ROUTING // KAT-@Model.ID.ToString("00")
+        </div>
+        <h1 class="sd-hero-titel mb-1">Kategorie bearbeiten</h1>
+        <p class="sd-hero-unter mb-0">Themenfeld „@Model.Name“ anpassen</p>
     </div>
-    <a asp-action="Index" class="btn btn-outline-dark">&lt; Zurück zur Übersicht</a>
+    <div class="d-flex gap-2">
+        <a asp-action="Details" asp-route-id="@Model.ID" class="sd-btn-outline-action">
+            Details &rarr;
+        </a>
+        <a asp-action="Index" class="sd-btn-outline-action">
+            &larr; Zurück zur Übersicht
+        </a>
+    </div>
 </div>
 
-<div class="sd-formular">
-    <form asp-action="Edit">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="ID" />
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="sd-join-card">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="sd-flash sd-flash-fehler"></div>
+                <input type="hidden" asp-for="ID" />
 
-        <div class="form-group">
-            <label asp-for="Name" class="form-label">Name der Kategorie *</label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
+                <div class="mb-3">
+                    <label asp-for="Name" class="sd-input-label">NAME DER KATEGORIE *</label>
+                    <input asp-for="Name" class="sd-glass-input" />
+                    <span asp-validation-for="Name" class="text-danger small fw-semibold"></span>
+                </div>
 
-        <div class="form-group">
-            <label asp-for="Beschreibung" class="form-label">Kurzbeschreibung</label>
-            <textarea asp-for="Beschreibung" class="form-control" rows="3"></textarea>
-            <span asp-validation-for="Beschreibung" class="text-danger"></span>
-        </div>
+                <div class="mb-4">
+                    <label asp-for="Beschreibung" class="sd-input-label">KURZBESCHREIBUNG</label>
+                    <textarea asp-for="Beschreibung" class="sd-glass-input" rows="4"></textarea>
+                    <span asp-validation-for="Beschreibung" class="text-danger small fw-semibold"></span>
+                </div>
 
-        <div class="sd-formular-aktionen">
-            <a asp-action="Index" class="btn btn-outline-dark">Abbrechen</a>
-            <button type="submit" class="btn btn-dark">Änderungen speichern &gt;</button>
+                <div class="d-flex justify-content-between align-items-center pt-2">
+                    <a asp-action="Index" class="sd-btn-outline-action">Abbrechen</a>
+                    <button type="submit" class="sd-btn-submit-crew">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m5 13 4 4L19 7"/>
+                        </svg>
+                        Änderungen speichern &rarr;
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {

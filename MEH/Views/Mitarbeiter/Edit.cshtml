@@ -1,57 +1,100 @@
 @model MEH.Models.Mitarbeiter
 
 @{
-    ViewData["Title"] = "Mitarbeiter bearbeiten";
+    ViewData["Title"] = "Mitarbeiter bearbeiten // " + Model.Name;
+    var initials = $"{Model.Vorname?.FirstOrDefault()}{Model.Nachname?.FirstOrDefault()}".ToUpper();
+    if (string.IsNullOrWhiteSpace(initials)) { initials = "IT"; }
 }
 
-<div class="sd-kopf">
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
     <div>
-        <div class="sd-label">Seite 04 // #EMP-@Model.ID.ToString("00")</div>
-        <h1 class="sd-seiten-titel">Mitarbeiter <em>bearbeiten</em></h1>
+        <div class="sd-squad-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            TEAM STAMMDATEN // #EMP-@Model.ID.ToString("00")
+        </div>
+        <h1 class="sd-hero-titel mb-1">Mitarbeiterprofil bearbeiten</h1>
+        <p class="sd-hero-unter mb-0">Zuständigkeiten und Benutzerkonto für <strong>@Model.Name</strong> verwalten.</p>
     </div>
-    <a asp-action="Index" class="btn btn-outline-dark">&lt; Zurück zur Übersicht</a>
+    <div class="d-flex gap-2">
+        <a asp-action="Details" asp-route-id="@Model.ID" class="sd-btn-outline-action">
+            Details ansehen &rarr;
+        </a>
+        <a asp-action="Index" class="sd-btn-outline-action">
+            &larr; Zurück zur Übersicht
+        </a>
+    </div>
 </div>
 
-<div class="sd-formular">
-    <form asp-action="Edit">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="ID" />
-        <div class="row g-3">
-            <div class="col-md-6 form-group">
-                <label asp-for="Vorname" class="form-label">Vorname *</label>
-                <input asp-for="Vorname" class="form-control" />
-                <span asp-validation-for="Vorname" class="text-danger"></span>
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="sd-join-card">
+            
+            <!-- AVATAR & IDENTITY STRIP -->
+            <div class="d-flex align-items-center gap-3 pb-3 mb-4 border-bottom border-secondary border-opacity-25">
+                <div class="sd-crew-avatar">
+                    @initials
+                </div>
+                <div>
+                    <div class="sd-crew-status">
+                        <span class="sd-mini-dot"></span> IM DIENST
+                    </div>
+                    <h3 class="sd-crew-name mb-0">@Model.Name</h3>
+                    <div class="sd-tech-id">TECH-@initials &middot; #EMP-@Model.ID.ToString("00")</div>
+                </div>
             </div>
-            <div class="col-md-6 form-group">
-                <label asp-for="Nachname" class="form-label">Nachname *</label>
-                <input asp-for="Nachname" class="form-control" />
-                <span asp-validation-for="Nachname" class="text-danger"></span>
-            </div>
-        </div>
 
-        <div class="form-group">
-            <label asp-for="Email" class="form-label">E-Mail-Adresse *</label>
-            <input asp-for="Email" type="email" class="form-control" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="sd-flash sd-flash-fehler"></div>
+                <input type="hidden" asp-for="ID" />
 
-        <div class="form-group">
-            <label asp-for="Fachbereich" class="form-label">Fachbereich *</label>
-            <input asp-for="Fachbereich" class="form-control" placeholder="z. B. Netzwerk, Hardware" />
-            <span asp-validation-for="Fachbereich" class="text-danger"></span>
-        </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Vorname" class="sd-input-label">VORNAME *</label>
+                        <input asp-for="Vorname" class="sd-glass-input" />
+                        <span asp-validation-for="Vorname" class="text-danger small fw-semibold"></span>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Nachname" class="sd-input-label">NACHNAME *</label>
+                        <input asp-for="Nachname" class="sd-glass-input" />
+                        <span asp-validation-for="Nachname" class="text-danger small fw-semibold"></span>
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <label asp-for="Password" class="form-label">Passwort *</label>
-            <input asp-for="Password" type="password" class="form-control" value="@Model.Password" />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="sd-input-label">E-MAIL-ADRESSE *</label>
+                    <input asp-for="Email" type="email" class="sd-glass-input" />
+                    <span asp-validation-for="Email" class="text-danger small fw-semibold"></span>
+                </div>
 
-        <div class="sd-formular-aktionen">
-            <a asp-action="Index" class="btn btn-outline-dark">Abbrechen</a>
-            <button type="submit" class="btn btn-dark">Änderungen speichern &gt;</button>
+                <div class="mb-3">
+                    <label asp-for="Fachbereich" class="sd-input-label">FACHBEREICH / SPEZIALISIERUNG *</label>
+                    <input asp-for="Fachbereich" class="sd-glass-input" placeholder="z. B. Netzwerk, Hardware, Support" />
+                    <span asp-validation-for="Fachbereich" class="text-danger small fw-semibold"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Password" class="sd-input-label">PASSWORT *</label>
+                    <input asp-for="Password" type="password" class="sd-glass-input" value="@Model.Password" />
+                    <span asp-validation-for="Password" class="text-danger small fw-semibold"></span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center pt-2">
+                    <a asp-action="Index" class="sd-btn-outline-action">Abbrechen</a>
+                    <button type="submit" class="sd-btn-submit-crew">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m5 13 4 4L19 7"/>
+                        </svg>
+                        Änderungen speichern &rarr;
+                    </button>
+                </div>
+            </form>
+
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {

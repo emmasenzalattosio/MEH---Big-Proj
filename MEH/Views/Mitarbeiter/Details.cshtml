@@ -1,31 +1,172 @@
 @model MEH.Models.Mitarbeiter
+@using MEH.Models
 
 @{
-    ViewData["Title"] = "Mitarbeiter – Details";
+    ViewData["Title"] = "Mitarbeiter // " + Model.Name;
+    var initials = $"{Model.Vorname?.FirstOrDefault()}{Model.Nachname?.FirstOrDefault()}".ToUpper();
+    if (string.IsNullOrWhiteSpace(initials)) { initials = "IT"; }
+
+    int totalTickets = Model.Tickets?.Count ?? 0;
+    int openTickets = Model.Tickets?.Count(t => t.Status != TicketStatus.Schluss) ?? 0;
+    var loadPercent = Math.Min(100, openTickets * 20);
+    var isHeavyLoad = loadPercent >= 75;
 }
 
-<div class="sd-kopf">
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
     <div>
-        <div class="sd-label">Seite 04 // #EMP-@Model.ID.ToString("00")</div>
-        <h1 class="sd-seiten-titel">@Model.Vorname @Model.Nachname</h1>
+        <div class="sd-squad-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            TEAM PROFIL // #EMP-@Model.ID.ToString("00")
+        </div>
+        <h1 class="sd-hero-titel mb-1">@Model.Name</h1>
+        <p class="sd-hero-unter mb-0">Techniker &middot; @(string.IsNullOrWhiteSpace(Model.Fachbereich) ? "IT-Support" : Model.Fachbereich)</p>
     </div>
-    <a asp-action="Index" class="btn btn-outline-dark">&lt; Zurück zur Übersicht</a>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="sd-btn-outline-action">
+            &larr; Zurück zur Übersicht
+        </a>
+    </div>
 </div>
 
-<div class="sd-formular">
-    <dl class="row">
-        <dt class="col-sm-3">Vorname</dt>
-        <dd class="col-sm-9">@Model.Vorname</dd>
-        <dt class="col-sm-3">Nachname</dt>
-        <dd class="col-sm-9">@Model.Nachname</dd>
-        <dt class="col-sm-3">E-Mail</dt>
-        <dd class="col-sm-9">@Model.Email</dd>
-        <dt class="col-sm-3">Fachbereich</dt>
-        <dd class="col-sm-9">@Model.Fachbereich</dd>
-    </dl>
+<div class="row g-4">
+    <!-- LEFT: TECHNICIAN CARD -->
+    <div class="col-12 col-lg-4">
+        <div class="sd-crew-card mb-4">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="sd-crew-avatar" style="width: 56px; height: 56px; font-size: 1.25rem;">
+                    @initials
+                </div>
+                <div>
+                    <div class="sd-crew-status">
+                        <span class="sd-mini-dot"></span> IM DIENST
+                    </div>
+                    <h3 class="sd-crew-name mb-0">@Model.Name</h3>
+                    <div class="sd-crew-dept">@Model.Fachbereich</div>
+                </div>
+            </div>
 
-    <div class="sd-formular-aktionen">
-        <a asp-action="Delete" asp-route-id="@Model.ID" class="btn btn-outline-dark">Löschen</a>
-        <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-dark">Bearbeiten &gt;</a>
+            <div class="d-flex justify-content-between align-items-center pt-2 mb-3">
+                <span class="sd-dept-chip">[ @(string.IsNullOrWhiteSpace(Model.Fachbereich) ? "Support" : Model.Fachbereich) ]</span>
+                <span class="sd-tech-id">TECH-@initials</span>
+            </div>
+
+            <!-- WORKLOAD -->
+            <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1 small">
+                    <span class="text-secondary" style="font-size: 0.8rem;">
+                        @openTickets Aktive@(openTickets == 1 ? "s" : "") Ticket@(openTickets == 1 ? "" : "s") (@(loadPercent)% Last)
+                    </span>
+                    <span class="font-monospace fw-semibold @(isHeavyLoad ? "text-danger" : "text-info")" style="font-size: 0.78rem;">
+                        @(loadPercent)%
+                    </span>
+                </div>
+                <div class="sd-progress-track">
+                    <div class="sd-progress-fill @(isHeavyLoad ? "bg-danger" : "bg-info")" style="width: @(loadPercent)%;"></div>
+                </div>
+            </div>
+
+            <div class="small text-secondary mb-4">
+                <strong>E-Mail:</strong> <a href="mailto:@Model.Email" class="text-info">@Model.Email</a>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.ID" class="sd-btn-submit-crew flex-grow-1 justify-content-center">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    Profil bearbeiten
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT: DETAILS & ASSIGNED TICKETS -->
+    <div class="col-12 col-lg-8">
+        <div class="sd-join-card mb-4">
+            
+            <div class="sd-join-kicker mb-1">STAMMDATEN // SYSTEMINFORMATIONEN</div>
+            <h3 class="sd-join-title mb-4 fs-5">Mitarbeiter Details</h3>
+
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">VORNAME</div>
+                        <div class="sd-detail-value">@Model.Vorname</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">NACHNAME</div>
+                        <div class="sd-detail-value">@Model.Nachname</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">E-MAIL</div>
+                        <div class="sd-detail-value text-info font-monospace">@Model.Email</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">FACHBEREICH</div>
+                        <div class="sd-detail-value">@Model.Fachbereich</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ASSIGNED TICKETS -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="sd-bereich-titel mb-0 fs-6">Aktuell zugewiesene Tickets (@(Model.Tickets?.Count ?? 0))</h4>
+                <span class="sd-dept-chip">@openTickets Offen</span>
+            </div>
+
+            @if (Model.Tickets != null && Model.Tickets.Any())
+            {
+                <div class="sd-stream">
+                    @foreach (var t in Model.Tickets)
+                    {
+                        <div class="sd-stream-zeile">
+                            <div class="sd-stream-links">
+                                <span class="sd-tech-id">@t.Nummer()</span>
+                                <span class="sd-stream-titel">@t.Titel</span>
+                            </div>
+                            <div class="sd-stream-rechts">
+                                <span class="sd-badge @t.Prioritaet.BadgeKlasse()">@t.Prioritaet.Anzeige()</span>
+                                <span class="sd-badge @t.Status.BadgeKlasse()">@t.Status.Anzeige()</span>
+                                <a asp-controller="Ticket" asp-action="Details" asp-route-id="@t.ID" class="sd-btn-oeffnen">
+                                    Öffnen &rarr;
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="p-3 rounded text-center text-secondary small" style="background: rgba(11, 15, 28, 0.5); border: 1px solid rgba(255, 255, 255, 0.06);">
+                    Aktuell sind diesem Techniker keine Tickets zugewiesen.
+                </div>
+            }
+
+            <div class="d-flex justify-content-between align-items-center pt-4 border-top border-secondary border-opacity-25 mt-3">
+                <a asp-action="Delete" asp-route-id="@Model.ID" class="sd-btn-danger-action">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Mitarbeiter löschen
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.ID" class="sd-btn-outline-action">
+                    Bearbeiten &rarr;
+                </a>
+            </div>
+
+        </div>
     </div>
 </div>

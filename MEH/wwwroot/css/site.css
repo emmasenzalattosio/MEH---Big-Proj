@@ -469,3 +469,473 @@ h1, h2, h3, h4 {
 @media (max-width: 576px) {
     .sd-stats-grid { grid-template-columns: 1fr; }
 }
+
+
+/* =========================================================
+   IT-Support Squad & Crew Roster Styling (Figma Design)
+   ========================================================= */
+
+.sd-squad-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #60a5fa;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.sd-squad-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 10px;
+    padding: 0.45rem 0.85rem;
+    min-width: 320px;
+    backdrop-filter: blur(10px);
+}
+
+.sd-squad-search .sd-search-icon {
+    color: #64748b;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+}
+
+.sd-squad-search input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-size: 0.85rem;
+    width: 100%;
+}
+
+.sd-squad-search input::placeholder {
+    color: #64748b;
+}
+
+.sd-search-badge {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    font-size: 0.68rem;
+    color: #94a3b8;
+    padding: 0.1rem 0.35rem;
+    font-family: var(--sd-mono);
+}
+
+.sd-dot-pulse {
+    width: 8px;
+    height: 8px;
+    background-color: #10b981;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 10px #10b981;
+}
+
+/* CREW CARDS */
+.sd-crew-card {
+    background: rgba(15, 23, 42, 0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(59, 130, 246, 0.18);
+    border-radius: 14px;
+    padding: 1.35rem 1.4rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sd-crew-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(59, 130, 246, 0.45);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+}
+
+.sd-crew-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 1.5px solid rgba(59, 130, 246, 0.4);
+    color: #60a5fa;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 16px rgba(37, 99, 235, 0.25);
+    flex-shrink: 0;
+}
+
+.sd-crew-status {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #10b981;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.15rem;
+}
+
+.sd-mini-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #10b981;
+}
+
+.sd-crew-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.15rem;
+    line-height: 1.2;
+}
+
+.sd-crew-dept {
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.sd-dept-chip {
+    font-size: 0.75rem;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-family: var(--sd-mono);
+}
+
+.sd-tech-id {
+    font-size: 0.72rem;
+    color: #64748b;
+    font-family: var(--sd-mono);
+    letter-spacing: 0.05em;
+}
+
+.sd-progress-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.sd-progress-fill {
+    height: 100%;
+    border-radius: 9999px;
+    transition: width 0.3s ease;
+}
+
+.sd-btn-outline-action {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #ffffff !important;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.45rem 0.85rem;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.15s ease;
+}
+
+.sd-btn-outline-action:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff !important;
+}
+
+.sd-btn-view-assignments {
+    background: rgba(37, 99, 235, 0.12);
+    border: 1px solid rgba(37, 99, 235, 0.35);
+    color: #93c5fd !important;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.15s ease;
+}
+
+.sd-btn-view-assignments:hover {
+    background: rgba(37, 99, 235, 0.25);
+    border-color: #60a5fa;
+    color: #ffffff !important;
+}
+
+.sd-icon-btn {
+    background: transparent;
+    border: none;
+    padding: 0.3rem;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+}
+
+.sd-icon-btn:hover {
+    color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.15);
+}
+
+/* RIGHT: JOIN CARD / FORM */
+.sd-join-card {
+    background: rgba(15, 23, 42, 0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 16px;
+    padding: 1.75rem;
+}
+
+.sd-join-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(37, 99, 235, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    color: #60a5fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sd-join-kicker {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #60a5fa;
+}
+
+.sd-join-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.sd-join-text {
+    font-size: 0.84rem;
+    color: #94a3b8;
+    line-height: 1.45;
+}
+
+.sd-input-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    margin-bottom: 0.35rem;
+    display: block;
+}
+
+.sd-glass-input {
+    width: 100%;
+    background: rgba(11, 15, 28, 0.85);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 8px;
+    padding: 0.55rem 0.85rem;
+    color: #ffffff;
+    font-size: 0.88rem;
+    outline: none;
+    transition: all 0.15s ease;
+}
+
+.sd-glass-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.sd-glass-input::placeholder {
+    color: #475569;
+}
+
+.sd-btn-submit-crew {
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.92rem;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.sd-btn-submit-crew:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.sd-ref-shield {
+    background: rgba(11, 15, 28, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.sd-shield-icon {
+    color: #38bdf8;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+}
+
+/* ---------- Status & Priority Badge System (AnzeigeHelper) ---------- */
+.sd-badge {
+    padding: 0.25rem 0.8rem;
+    border-radius: 9999px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    letter-spacing: 0.02em;
+    font-family: var(--sd-sans);
+}
+.sd-status-offen {
+    background: rgba(59, 130, 246, 0.18);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.35);
+}
+.sd-status-bearbeitung {
+    background: rgba(245, 158, 11, 0.18);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+.sd-status-abgeschlossen {
+    background: rgba(16, 185, 129, 0.18);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+.sd-prio-hoch {
+    background: rgba(239, 68, 68, 0.18);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+.sd-prio-mittel {
+    background: rgba(245, 158, 11, 0.18);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+.sd-prio-niedrig {
+    background: rgba(16, 185, 129, 0.18);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+/* Radio button pills */
+.btn-check:checked + .sd-glass-input {
+    border-color: #38bdf8 !important;
+    background: rgba(56, 189, 248, 0.18) !important;
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.3) !important;
+}
+
+/* Action Buttons */
+.sd-btn-danger-action {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #fca5a5 !important;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.65rem 1.25rem;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.15s ease;
+    cursor: pointer;
+}
+.sd-btn-danger-action:hover {
+    background: #dc2626;
+    border-color: #ef4444;
+    color: #ffffff !important;
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+}
+
+.sd-btn-warning-action {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: #fcd34d !important;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.65rem 1.25rem;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.15s ease;
+    cursor: pointer;
+}
+.sd-btn-warning-action:hover {
+    background: #d97706;
+    border-color: #f59e0b;
+    color: #ffffff !important;
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.4);
+}
+
+/* Danger / Alert Shields */
+.sd-danger-shield {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+.sd-danger-shield-icon {
+    color: #f87171;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+}
+
+/* Meta Key-Value Details Cards */
+.sd-detail-item {
+    background: rgba(11, 15, 28, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+}
+.sd-detail-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+.sd-detail-value {
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Locked Formset Banner */
+.sd-lock-card {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+

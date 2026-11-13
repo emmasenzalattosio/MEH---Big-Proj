@@ -1,37 +1,102 @@
 @model MEH.Models.Ticket
+@using MEH.Models
 
 @{
-    ViewData["Title"] = "Ticket löschen";
+    ViewData["Title"] = "Ticket löschen // " + Model.Nummer();
 }
 
-<div class="sd-kopf">
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
     <div>
-        <div class="sd-label">Seite 02 // @Model.Nummer()</div>
-        <h1 class="sd-seiten-titel">Ticket <em>löschen?</em></h1>
+        <div class="sd-squad-tag text-danger">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            SICHERHEITSABFRAGE // LÖSCHVORGANG
+        </div>
+        <h1 class="sd-hero-titel mb-1">Ticket <span class="text-danger">löschen?</span></h1>
+        <p class="sd-hero-unter mb-0">Möchtest du das Ticket <strong>@Model.Nummer()</strong> wirklich unwiderruflich aus dem System entfernen?</p>
     </div>
-    <a asp-action="Index" class="btn btn-outline-dark">&lt; Zurück zur Liste</a>
+    <a asp-action="Index" class="sd-btn-outline-action">
+        &larr; Zurück zur Übersicht
+    </a>
 </div>
 
-<div class="sd-formular">
-    <div class="sd-hinweis mb-4">
-        <div class="sd-label sd-label-akzent">■ Achtung</div>
-        <p class="mb-0 mt-2">Das Ticket wird endgültig aus der Datenbank entfernt.</p>
+<!-- DANGER CARD -->
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="sd-join-card" style="border-color: rgba(239, 68, 68, 0.3);">
+            
+            <!-- DANGER SHIELD -->
+            <div class="sd-danger-shield mb-4">
+                <div class="sd-danger-shield-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="fw-bold text-white mb-1">Unwiderruflicher Löschvorgang</div>
+                    <div class="text-secondary small">
+                        Das Ticket sowie alle zugehörigen Metadaten werden permanent gelöscht. Es gibt keinen Papierkorb.
+                    </div>
+                </div>
+            </div>
+
+            <!-- TICKET SUMMARY PREVIEW -->
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">TITEL DER STÖRUNG</div>
+                        <div class="sd-detail-value fs-5 text-white">@Model.Titel</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">KATEGORIE</div>
+                        <div class="sd-detail-value">@(Model.Kategorie?.Name ?? "– keine Kategorie –")</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">STATUS &amp; PRIORITÄT</div>
+                        <div class="sd-detail-value d-flex gap-2 align-items-center">
+                            <span class="sd-badge @Model.Status.BadgeKlasse()">@Model.Status.Anzeige()</span>
+                            <span class="sd-badge @Model.Prioritaet.BadgeKlasse()">@Model.Prioritaet.Anzeige()</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">ZUSTÄNDIGER MITARBEITER</div>
+                        <div class="sd-detail-value">@(Model.Mitarbeiter?.Name ?? "– nicht zugewiesen –")</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">ERSTELLT AM</div>
+                        <div class="sd-detail-value font-monospace">@Model.ErstelltAm.ToString("dd.MM.yyyy HH:mm")</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONFIRMATION FORM -->
+            <form asp-action="Delete" method="post" class="d-flex justify-content-between align-items-center pt-2">
+                <input type="hidden" asp-for="ID" />
+                <a asp-action="Index" class="sd-btn-outline-action">
+                    Abbrechen
+                </a>
+                <button type="submit" class="sd-btn-danger-action">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Endgültig löschen
+                </button>
+            </form>
+        </div>
     </div>
-
-    <dl class="row">
-        <dt class="col-sm-3">Titel</dt>
-        <dd class="col-sm-9">@Model.Titel</dd>
-        <dt class="col-sm-3">Kategorie</dt>
-        <dd class="col-sm-9">@(Model.Kategorie?.Name ?? "–")</dd>
-        <dt class="col-sm-3">Status</dt>
-        <dd class="col-sm-9"><span class="sd-badge @Model.Status.BadgeKlasse()">@Model.Status.Anzeige()</span></dd>
-        <dt class="col-sm-3">Zuständig</dt>
-        <dd class="col-sm-9">@(Model.Mitarbeiter?.Name ?? "– nicht zugewiesen –")</dd>
-    </dl>
-
-    <form asp-action="Delete" class="sd-formular-aktionen">
-        <input type="hidden" asp-for="ID" />
-        <a asp-action="Index" class="btn btn-outline-dark">Abbrechen</a>
-        <button type="submit" class="btn btn-dark">Endgültig löschen</button>
-    </form>
 </div>

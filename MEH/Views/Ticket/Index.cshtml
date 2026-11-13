@@ -1,4 +1,5 @@
 @model IEnumerable<MEH.Models.Ticket>
+@using MEH.Models
 
 @{
     ViewData["Title"] = "IT-Support Übersicht";
@@ -14,15 +15,34 @@
     bool filterAktiv = gewaehlterStatus.HasValue || gewaehltePrio.HasValue || !string.IsNullOrWhiteSpace(suche);
 }
 
-<!-- KOPFZEILE (EXAKT WIE IM MOCKUP) -->
-<div class="mb-4">
-    <h1 class="sd-hero-titel">IT-Support Übersicht</h1>
-    <p class="sd-hero-unter">Zentrale Ticketverwaltung &mdash; Westfalen Office Solutions</p>
+<!-- TOP HERO HEADER -->
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+    <div>
+        <div class="sd-squad-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            TICKET SYSTEM // WESTFALEN OFFICE SOLUTIONS
+        </div>
+        <h1 class="sd-hero-titel mb-1">IT-Support Übersicht</h1>
+        <p class="sd-hero-unter mb-0">Zentrale Ticketverwaltung, Lastverteilung und SLA-Monitoring in Echtzeit.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Create" class="sd-btn-submit-crew">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Neues Ticket erfassen
+        </a>
+    </div>
 </div>
 
-<!-- 4 KPI KACHELN (EXAKT WIE IM MOCKUP) -->
+<!-- 4 KPI KACHELN -->
 <div class="sd-stats-grid">
-    <a asp-action="Index" asp-route-statusFilter="@TicketStatus.Offen" class="sd-stat-box">
+    <a asp-action="Index" asp-route-statusFilter="@TicketStatus.Offen" class="sd-stat-box @(gewaehlterStatus == TicketStatus.Offen ? "border-primary" : "")">
         <div class="sd-stat-top">
             <div class="sd-stat-nummer">@offen.ToString("00")</div>
             <div class="sd-stat-icon sd-icon-blue">
@@ -35,7 +55,7 @@
         <div class="sd-stat-beschr">Offene Tickets</div>
     </a>
 
-    <a asp-action="Index" asp-route-statusFilter="@TicketStatus.InBearbeitung" class="sd-stat-box">
+    <a asp-action="Index" asp-route-statusFilter="@TicketStatus.InBearbeitung" class="sd-stat-box @(gewaehlterStatus == TicketStatus.InBearbeitung ? "border-warning" : "")">
         <div class="sd-stat-top">
             <div class="sd-stat-nummer">@inArbeit.ToString("00")</div>
             <div class="sd-stat-icon sd-icon-amber">
@@ -48,7 +68,7 @@
         <div class="sd-stat-beschr">In Bearbeitung</div>
     </a>
 
-    <a asp-action="Index" asp-route-statusFilter="@TicketStatus.Schluss" class="sd-stat-box">
+    <a asp-action="Index" asp-route-statusFilter="@TicketStatus.Schluss" class="sd-stat-box @(gewaehlterStatus == TicketStatus.Schluss ? "border-success" : "")">
         <div class="sd-stat-top">
             <div class="sd-stat-nummer">@erledigt.ToString("00")</div>
             <div class="sd-stat-icon sd-icon-green">
@@ -61,7 +81,7 @@
         <div class="sd-stat-beschr">Abgeschlossen</div>
     </a>
 
-    <a asp-action="Index" asp-route-prioFilter="@TicketPrioritaet.Hoch" class="sd-stat-box">
+    <a asp-action="Index" asp-route-prioFilter="@TicketPrioritaet.Hoch" class="sd-stat-box @(gewaehltePrio == TicketPrioritaet.Hoch ? "border-danger" : "")">
         <div class="sd-stat-top">
             <div class="sd-stat-nummer">@hoch.ToString("00")</div>
             <div class="sd-stat-icon sd-icon-red">
@@ -76,84 +96,105 @@
     </a>
 </div>
 
-<!-- DRÄNGENDE TICKETS (STREAM-LISTE WIE IM FIGMA-BILD) -->
+<!-- DRÄNGENDE TICKETS / AKTIVE STROMLISTE -->
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="sd-bereich-titel mb-0">Drängende Tickets</h2>
+    <div class="d-flex align-items-center gap-2">
+        <h2 class="sd-bereich-titel mb-0">Aktuelle Support-Tickets</h2>
+        @if (filterAktiv)
+        {
+            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25 py-1 px-2 font-monospace" style="font-size: 0.72rem;">FILTER AKTIV</span>
+        }
+    </div>
     @if (filterAktiv)
     {
-        <a asp-action="Index" class="sd-subtle-link">Filter zurücksetzen</a>
+        <a asp-action="Index" class="sd-btn-outline-action py-1 px-3">
+            &times; Alle Filter zurücksetzen
+        </a>
     }
 </div>
 
 <div class="sd-stream">
     @if (!Model.Any())
     {
-        <div class="sd-stream-zeile text-secondary py-4 text-center justify-content-center">
-            Keine Tickets gefunden.
+        <div class="sd-crew-card text-center py-5">
+            <div class="sd-join-icon mx-auto mb-3" style="width: 48px; height: 48px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 14 14"/>
+                </svg>
+            </div>
+            <h4 class="text-white mb-2">Keine Tickets im ausgewählten Bereich</h4>
+            <p class="text-secondary small mb-4">Aktuell liegen keine offenen Störungen mit diesen Filterkriterien vor.</p>
+            <a asp-action="Create" class="sd-btn-submit-crew mx-auto d-inline-flex">
+                + Erstes Ticket erfassen
+            </a>
         </div>
     }
     @foreach (var t in Model)
     {
-        var prioPillClass = t.Prioritaet switch
-        {
-            TicketPrioritaet.Hoch => "sd-pill-red",
-            TicketPrioritaet.Mittel => "sd-pill-amber",
-            _ => "sd-pill-green"
-        };
-
         <div class="sd-stream-zeile">
             <div class="sd-stream-links">
-                <span class="sd-stream-id">#@t.ID</span>
-                <span class="sd-stream-titel">@t.Titel</span>
+                <span class="sd-tech-id">@t.Nummer()</span>
+                <span class="sd-stream-titel" title="@t.Titel">@t.Titel</span>
             </div>
             <div class="sd-stream-rechts">
-                <span class="sd-stream-kat">@(t.Kategorie?.Name ?? "Allgemein")</span>
-                <span class="sd-pill @prioPillClass">@t.Prioritaet.Anzeige()</span>
+                <span class="sd-dept-chip">[ @(t.Kategorie?.Name ?? "Allgemein") ]</span>
+                <span class="sd-badge @t.Prioritaet.BadgeKlasse()">@t.Prioritaet.Anzeige()</span>
+                <span class="sd-badge @t.Status.BadgeKlasse()">@t.Status.Anzeige()</span>
                 <a asp-action="Details" asp-route-id="@t.ID" class="sd-btn-oeffnen">
-                    Öffnen &rarr;
+                    Details &rarr;
                 </a>
             </div>
         </div>
     }
 </div>
 
-<!-- OPTIONAL: TABELLEN-ANSICHT & FILTERUNGS-PANEL (Vollständige Anforderung) -->
-<details class="mt-4">
-    <summary class="sd-subtle-link py-2" style="cursor: pointer;">
-        Vollständige Ticket-Filterung &amp; Tabellensicht einblenden
-    </summary>
-    <div class="mt-3">
-        <form asp-action="Index" method="get" class="sd-filter">
-            <div>
-                <label class="form-label" for="statusFilter">Status</label>
-                <select class="form-select" id="statusFilter" name="statusFilter">
-                    <option value="">Alle Status</option>
-                    @foreach (var s in Enum.GetValues<TicketStatus>())
-                    {
-                        <option value="@s" selected="@(gewaehlterStatus == s)">@s.Anzeige()</option>
-                    }
-                </select>
-            </div>
-            <div>
-                <label class="form-label" for="prioFilter">Priorität</label>
-                <select class="form-select" id="prioFilter" name="prioFilter">
-                    <option value="">Alle Prioritäten</option>
-                    @foreach (var p in Enum.GetValues<TicketPrioritaet>())
-                    {
-                        <option value="@p" selected="@(gewaehltePrio == p)">@p.Anzeige()</option>
-                    }
-                </select>
-            </div>
-            <div>
-                <label class="form-label" for="suche">Volltextsuche</label>
-                <input class="form-control" id="suche" name="suche" value="@suche" placeholder="Titel oder Beschreibung …" />
-            </div>
-            <div class="d-flex flex-column gap-1">
-                <button type="submit" class="btn btn-primary w-100">Filtern</button>
-            </div>
-        </form>
+<!-- FILTERUNG & TABELLEN-DETAILSICHT (DARK GLASS DESIGN) -->
+<div class="sd-join-card mt-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+            <div class="sd-join-kicker">SUCHE &amp; FILTERUNG</div>
+            <h3 class="sd-join-title mb-0 fs-5">Erweiterte Ticket-Datenbank</h3>
+        </div>
+        <span class="sd-dept-chip">@Model.Count() Datensätze geladen</span>
+    </div>
 
-        <table class="table table-hover mt-3">
+    <!-- FILTER BAR -->
+    <form asp-action="Index" method="get" class="row g-3 mb-4">
+        <div class="col-12 col-md-3">
+            <label class="sd-input-label" for="statusFilter">STATUS</label>
+            <select class="sd-glass-input" id="statusFilter" name="statusFilter">
+                <option value="">Alle Status</option>
+                @foreach (var s in Enum.GetValues<TicketStatus>())
+                {
+                    <option value="@s" selected="@(gewaehlterStatus == s)">@s.Anzeige()</option>
+                }
+            </select>
+        </div>
+        <div class="col-12 col-md-3">
+            <label class="sd-input-label" for="prioFilter">PRIORITÄT</label>
+            <select class="sd-glass-input" id="prioFilter" name="prioFilter">
+                <option value="">Alle Prioritäten</option>
+                @foreach (var p in Enum.GetValues<TicketPrioritaet>())
+                {
+                    <option value="@p" selected="@(gewaehltePrio == p)">@p.Anzeige()</option>
+                }
+            </select>
+        </div>
+        <div class="col-12 col-md-4">
+            <label class="sd-input-label" for="suche">VOLLTEXTSUCHE</label>
+            <input class="sd-glass-input" id="suche" name="suche" value="@suche" placeholder="Titel oder Fehlertext durchsuchen …" />
+        </div>
+        <div class="col-12 col-md-2 d-flex align-items-end gap-2">
+            <button type="submit" class="sd-btn-submit-crew w-100">
+                Filtern
+            </button>
+        </div>
+    </form>
+
+    <!-- TABLE -->
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
             <thead>
                 <tr>
                     <th>ID //</th>
@@ -161,35 +202,62 @@
                     <th>Kategorie</th>
                     <th>Priorität</th>
                     <th>Status</th>
-                    <th>Zuständig</th>
+                    <th>Zuständiger Techniker</th>
                     <th>Erstellt am</th>
-                    <th>Aktionen</th>
+                    <th class="text-end">Aktionen</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var t in Model)
                 {
                     <tr>
-                        <td class="font-monospace text-muted">@t.Nummer()</td>
+                        <td class="font-monospace text-muted" style="font-size: 0.8rem;">@t.Nummer()</td>
                         <td>
-                            <a asp-action="Details" asp-route-id="@t.ID" class="fw-semibold text-white">@t.Titel</a>
+                            <a asp-action="Details" asp-route-id="@t.ID" class="fw-semibold text-white">
+                                @t.Titel
+                            </a>
                         </td>
-                        <td>[@(t.Kategorie?.Name ?? "–")]</td>
-                        <td><span class="sd-badge @t.Prioritaet.BadgeKlasse()">@t.Prioritaet.Anzeige()</span></td>
-                        <td><span class="sd-badge @t.Status.BadgeKlasse()">@t.Status.Anzeige()</span></td>
-                        <td>@(t.Mitarbeiter?.Name ?? "– nicht zugewiesen –")</td>
-                        <td class="font-monospace small text-muted">@t.ErstelltAm.ToString("dd.MM.yyyy HH:mm")</td>
-                        <td class="sd-aktionen">
-                            @if (t.Status != TicketStatus.Schluss)
+                        <td>
+                            <span class="sd-dept-chip">[ @(t.Kategorie?.Name ?? "–") ]</span>
+                        </td>
+                        <td>
+                            <span class="sd-badge @t.Prioritaet.BadgeKlasse()">@t.Prioritaet.Anzeige()</span>
+                        </td>
+                        <td>
+                            <span class="sd-badge @t.Status.BadgeKlasse()">@t.Status.Anzeige()</span>
+                        </td>
+                        <td>
+                            @if (t.Mitarbeiter != null)
                             {
-                                <a asp-action="Edit" asp-route-id="@t.ID">Edit &gt;</a>
+                                <span class="text-white small">@t.Mitarbeiter.Name</span>
                             }
-                            <a asp-action="Details" asp-route-id="@t.ID">Details &gt;</a>
-                            <a asp-action="Delete" asp-route-id="@t.ID">Delete &gt;</a>
+                            else
+                            {
+                                <span class="text-secondary small fst-italic">– Pool –</span>
+                            }
+                        </td>
+                        <td class="font-monospace text-muted" style="font-size: 0.78rem;">
+                            @t.ErstelltAm.ToString("dd.MM.yyyy HH:mm")
+                        </td>
+                        <td class="text-end">
+                            <div class="d-inline-flex gap-1">
+                                @if (t.Status != TicketStatus.Schluss)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@t.ID" class="sd-btn-outline-action py-1 px-2" title="Bearbeiten">
+                                        Edit &gt;
+                                    </a>
+                                }
+                                <a asp-action="Details" asp-route-id="@t.ID" class="sd-btn-outline-action py-1 px-2" title="Details">
+                                    Details &gt;
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@t.ID" class="sd-btn-outline-action py-1 px-2 text-danger" title="Löschen">
+                                    &times;
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-</details>
+</div>

@@ -1,84 +1,138 @@
 @model MEH.Models.Ticket
+@using MEH.Models
 
 @{
-    ViewData["Title"] = "Neues Ticket";
+    ViewData["Title"] = "Neues Support-Ticket erfassen";
 }
 
-<div class="sd-kopf">
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
     <div>
-        <div class="sd-label">Seite 02 // Views/Ticket/Create.cshtml</div>
-        <h1 class="sd-seiten-titel">Neues <em>Support-Ticket</em> erfassen</h1>
+        <div class="sd-squad-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            TICKET MANAGEMENT
+        </div>
+        <h1 class="sd-hero-titel mb-1">Neues Support-Ticket erfassen</h1>
+        <p class="sd-hero-unter mb-0">Erstelle eine neue Störungsmeldung zur zentralen Bearbeitung durch das IT-Support Team.</p>
     </div>
-    <a asp-action="Index" class="btn btn-outline-dark">&lt; Abbrechen &amp; zurück zur Liste</a>
+    <a asp-action="Index" class="sd-btn-outline-action">
+        &larr; Zurück zur Übersicht
+    </a>
 </div>
 
-<div class="sd-zwei">
-    <!-- Linke Spalte: Hinweise -->
-    <aside>
-        <div class="sd-label sd-label-akzent">01 // Erfassung</div>
-        <h2 class="sd-seiten-titel mt-2">Erst beschreiben, <em>dann fluchen.</em></h2>
-        <p class="sd-klein mt-3">Je genauer die Fehlermeldung, desto seltener müssen wir fragen, ob das Kabel wirklich steckt.</p>
-        <div class="sd-hinweis mt-4">
-            <div class="sd-label">Hinweise zur Erfassung</div>
-            <p class="sd-klein mt-2 mb-0">Mit * markierte Felder sind Pflichtfelder. Die Eingaben werden serverseitig geprüft. Erstelldatum und Status „Offen“ setzt das System automatisch.</p>
-        </div>
-    </aside>
-
-    <!-- Rechte Spalte: Formular -->
-    <form asp-action="Create" class="sd-formular">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <div class="form-group">
-            <label asp-for="Titel" class="form-label">Aussagekräftiger Titel *</label>
-            <input asp-for="Titel" class="form-control" placeholder="z. B. Netzwerkdrucker im 3. OG druckt nicht" />
-            <span asp-validation-for="Titel" class="text-danger"></span>
-        </div>
-
-        <div class="row g-3">
-            <div class="col-md-6 form-group">
-                <label asp-for="KategorieID" class="form-label">Kategorie *</label>
-                <select asp-for="KategorieID" class="form-select" asp-items="ViewBag.Kategorien">
-                    <option value="">– bitte wählen –</option>
-                </select>
-                <span asp-validation-for="KategorieID" class="text-danger"></span>
+<!-- 2-COLUMN LAYOUT: INSTRUCTIONS/TIPS (LEFT 35%) + FORM (RIGHT 65%) -->
+<div class="row g-4">
+    <!-- LEFT SIDE: HELPDESK TIPS & PROTOCOL -->
+    <div class="col-12 col-lg-4">
+        <div class="sd-crew-card mb-3">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <div class="sd-join-icon" style="width: 32px; height: 32px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="16" x2="12" y2="12"/>
+                        <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                </div>
+                <h3 class="sd-crew-name mb-0 fs-5">Erfassungs-Guide</h3>
             </div>
-            <div class="col-md-6 form-group">
-                <label asp-for="MitarbeiterID" class="form-label">Zuständiger Mitarbeiter</label>
-                <select asp-for="MitarbeiterID" class="form-select" asp-items="ViewBag.Mitarbeiter">
-                    <option value="">– noch offen –</option>
-                </select>
-                <span asp-validation-for="MitarbeiterID" class="text-danger"></span>
+            <p class="small text-secondary mb-3">
+                Erst beschreiben, dann fluchen. Je genauer die Problembeschreibung, desto schneller kann ein Techniker die Ursache beheben.
+            </p>
+            <div class="sd-ref-shield mb-3">
+                <div class="sd-shield-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                </div>
+                <div class="small">
+                    <div class="fw-bold text-white mb-1">Automatische Zuweisung</div>
+                    <div class="text-secondary" style="font-size: 0.8rem;">
+                        Wählst du keinen Mitarbeiter aus, landet das Ticket im gemeinsamen Routing-Pool aller Techniker.
+                    </div>
+                </div>
+            </div>
+            <div class="small font-monospace text-muted">
+                STATUS BEIM ANLEGEN: <span class="sd-pill sd-pill-blue">OFFEN</span>
             </div>
         </div>
+    </div>
 
-        <div class="form-group">
-            <span class="form-label d-block">Priorität *</span>
-            <div class="sd-segment">
-                @foreach (var p in Enum.GetValues<TicketPrioritaet>())
-                {
-                    <input type="radio" class="btn-check" asp-for="Prioritaet" value="@p" id="prio-@p" />
-                    <label class="sd-segment-btn" for="prio-@p">@p.Anzeige()</label>
-                }
-            </div>
-            <span asp-validation-for="Prioritaet" class="text-danger"></span>
-        </div>
+    <!-- RIGHT SIDE: THE TICKET FORM -->
+    <div class="col-12 col-lg-8">
+        <div class="sd-join-card">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="sd-flash sd-flash-fehler"></div>
 
-        <div class="form-group">
-            <label asp-for="Beschreibung" class="form-label">Problembeschreibung *</label>
-            <textarea asp-for="Beschreibung" class="form-control" rows="5" placeholder="Welches Gerät/Programm? Welche Fehlermeldung? Seit wann?"></textarea>
-            <span asp-validation-for="Beschreibung" class="text-danger"></span>
-        </div>
+                <div class="mb-3">
+                    <label asp-for="Titel" class="sd-input-label">TITEL DER STÖRUNG *</label>
+                    <input asp-for="Titel" class="sd-glass-input" placeholder="z. B. Netzwerkdrucker im 3. OG druckt nicht mehr" />
+                    <span asp-validation-for="Titel" class="text-danger small fw-semibold"></span>
+                </div>
 
-        <div class="sd-precheck">
-            <input asp-for="HatNeuGestartet" class="form-check-input" />
-            <label asp-for="HatNeuGestartet" class="mb-0"><strong>Pre-Check:</strong> Ich bestätige, dass das Gerät bereits einmal neu gestartet wurde und alle Kabel fest sitzen.</label>
-        </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-12 col-md-6">
+                        <label asp-for="KategorieID" class="sd-input-label">KATEGORIE *</label>
+                        <select asp-for="KategorieID" class="sd-glass-input" asp-items="ViewBag.Kategorien">
+                            <option value="">– Bitte Kategorie wählen –</option>
+                        </select>
+                        <span asp-validation-for="KategorieID" class="text-danger small fw-semibold"></span>
+                    </div>
 
-        <div class="sd-formular-aktionen">
-            <a asp-action="Index" class="btn btn-outline-dark">Abbrechen</a>
-            <button type="submit" class="btn btn-akzent">Ticket speichern &amp; zur Übersicht &gt;</button>
+                    <div class="col-12 col-md-6">
+                        <label asp-for="MitarbeiterID" class="sd-input-label">ZUSTÄNDIGER MITARBEITER</label>
+                        <select asp-for="MitarbeiterID" class="sd-glass-input" asp-items="ViewBag.Mitarbeiter">
+                            <option value="">– Noch nicht zugewiesen (Pool) –</option>
+                        </select>
+                        <span asp-validation-for="MitarbeiterID" class="text-danger small fw-semibold"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="sd-input-label">PRIORITÄT *</label>
+                    <div class="d-flex gap-2">
+                        @foreach (var p in Enum.GetValues<TicketPrioritaet>())
+                        {
+                            var prioBadge = p switch {
+                                TicketPrioritaet.Hoch => "sd-pill-red",
+                                TicketPrioritaet.Mittel => "sd-pill-amber",
+                                _ => "sd-pill-green"
+                            };
+                            <div class="flex-grow-1 text-center">
+                                <input type="radio" class="btn-check" asp-for="Prioritaet" value="@p" id="prio-@p" />
+                                <label class="sd-glass-input d-block text-center cursor-pointer" for="prio-@p" style="cursor: pointer;">
+                                    <span class="sd-pill @prioBadge me-1">@p.Anzeige()</span>
+                                </label>
+                            </div>
+                        }
+                    </div>
+                    <span asp-validation-for="Prioritaet" class="text-danger small fw-semibold"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Beschreibung" class="sd-input-label">PROBLEM- &amp; FEHLERBESCHREIBUNG *</label>
+                    <textarea asp-for="Beschreibung" class="sd-glass-input" rows="5" placeholder="Welches Gerät / System? Welche Fehlermeldung? Seit wann tritt das Problem auf?"></textarea>
+                    <span asp-validation-for="Beschreibung" class="text-danger small fw-semibold"></span>
+                </div>
+
+                <div class="form-check mb-4 d-flex align-items-start gap-2 p-3 rounded" style="background: rgba(11, 15, 28, 0.5); border: 1px solid rgba(255, 255, 255, 0.08);">
+                    <input asp-for="HatNeuGestartet" class="form-check-input mt-1" />
+                    <label asp-for="HatNeuGestartet" class="form-check-label small text-secondary">
+                        <span class="text-white fw-semibold d-block">Pre-Check Bestätigung</span>
+                        Ich bestätige, dass das Gerät bereits einmal neu gestartet wurde und alle Kabelverbindungen fest sitzen.
+                    </label>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="sd-btn-outline-action">Abbrechen</a>
+                    <button type="submit" class="sd-btn-submit-crew">Ticket speichern &amp; zuweisen &rarr;</button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {

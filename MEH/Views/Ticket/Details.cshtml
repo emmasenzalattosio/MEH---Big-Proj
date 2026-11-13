@@ -1,48 +1,179 @@
 @model MEH.Models.Ticket
+@using MEH.Models
 
 @{
-    ViewData["Title"] = "Ticket " + Model.Nummer();
+    ViewData["Title"] = "Ticket Details // " + Model.Nummer();
     bool gesperrt = Model.Status == TicketStatus.Schluss;
 }
 
-<div class="sd-kopf">
+<!-- TOP HEADER -->
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
     <div>
-        <div class="sd-label">Seite 02 // @Model.Nummer() // @(Model.Kategorie?.Name ?? "ohne Kategorie")</div>
-        <h1 class="sd-seiten-titel">@Model.Titel</h1>
+        <div class="sd-squad-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            TICKET DETAILANSICHT // @Model.Nummer()
+        </div>
+        <h1 class="sd-hero-titel mb-1">@Model.Titel</h1>
+        <p class="sd-hero-unter mb-0">Erfasst am @Model.ErstelltAm.ToString("dd.MM.yyyy HH:mm") &middot; @(Model.Kategorie?.Name ?? "Allgemein")</p>
     </div>
-    <a asp-action="Index" class="btn btn-outline-dark">&lt; Zurück zur Liste</a>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="sd-btn-outline-action">
+            &larr; Zurück zur Übersicht
+        </a>
+    </div>
 </div>
 
-<div class="sd-formular sd-formular-breit">
-    <div class="mb-3">
-        <span class="sd-badge @Model.Prioritaet.BadgeKlasse()">Prio: @Model.Prioritaet.Anzeige()</span>
-        <span class="sd-badge @Model.Status.BadgeKlasse()">@Model.Status.Anzeige()</span>
+<div class="row g-4">
+    <!-- LEFT: MAIN TICKET CONTENT -->
+    <div class="col-12 col-lg-8">
+        <div class="sd-join-card mb-4">
+            <!-- STATUS STRIP -->
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 pb-3 mb-4 border-bottom border-secondary border-opacity-25">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="sd-badge @Model.Prioritaet.BadgeKlasse()">Prio: @Model.Prioritaet.Anzeige()</span>
+                    <span class="sd-badge @Model.Status.BadgeKlasse()">Status: @Model.Status.Anzeige()</span>
+                    <span class="sd-dept-chip">[ @(Model.Kategorie?.Name ?? "Keine Kategorie") ]</span>
+                </div>
+                <div class="small font-monospace text-muted">
+                    @Model.Nummer()
+                </div>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="mb-4">
+                <div class="sd-detail-label">PROBLEM- &amp; FEHLERBESCHREIBUNG</div>
+                <div class="p-3 rounded text-white" style="background: rgba(11, 15, 28, 0.65); border: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap;">@Model.Beschreibung</div>
+            </div>
+
+            <!-- METADATA GRID -->
+            <div class="row g-3">
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">KATEGORIE</div>
+                        <div class="sd-detail-value">@(Model.Kategorie?.Name ?? "– nicht kategorisiert –")</div>
+                        @if (!string.IsNullOrWhiteSpace(Model.Kategorie?.Beschreibung))
+                        {
+                            <div class="small text-secondary mt-1">@Model.Kategorie.Beschreibung</div>
+                        }
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">PRE-CHECK STATUS</div>
+                        <div class="sd-detail-value d-flex align-items-center gap-2">
+                            @if (Model.HatNeuGestartet)
+                            {
+                                <span class="text-success fw-bold">✓ Bestätigt</span>
+                                <span class="text-secondary small">(Neustart erfolgt)</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger fw-bold">&times; Ausstehend</span>
+                                <span class="text-secondary small">(Noch kein Neustart)</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">ERSTELLT AM</div>
+                        <div class="sd-detail-value font-monospace">@Model.ErstelltAm.ToString("dd.MM.yyyy HH:mm:ss") Uhr</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">TICKET-ID</div>
+                        <div class="sd-detail-value font-monospace text-info">#@Model.ID.ToString("0000")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <dl class="row">
-        <dt class="col-sm-3">Beschreibung</dt>
-        <dd class="col-sm-9">@Model.Beschreibung</dd>
-        <dt class="col-sm-3">Kategorie</dt>
-        <dd class="col-sm-9">@(Model.Kategorie?.Name ?? "–")</dd>
-        <dt class="col-sm-3">Zuständig</dt>
-        <dd class="col-sm-9">@(Model.Mitarbeiter?.Name ?? "– nicht zugewiesen –")</dd>
-        <dt class="col-sm-3">Erstellt am</dt>
-        <dd class="col-sm-9">@Model.ErstelltAm.ToString("dd.MM.yyyy HH:mm")</dd>
-        <dt class="col-sm-3">Pre-Check</dt>
-        <dd class="col-sm-9">@(Model.HatNeuGestartet ? "✓ Gerät wurde neu gestartet" : "✗ Noch nicht neu gestartet")</dd>
-    </dl>
+    <!-- RIGHT: TECHNICIAN & ACTIONS -->
+    <div class="col-12 col-lg-4">
+        <!-- TECHNICIAN CARD -->
+        <div class="sd-crew-card mb-4">
+            <div class="sd-join-kicker mb-1">ZUSTÄNDIGER TECHNIKER</div>
+            @if (Model.Mitarbeiter != null)
+            {
+                var initials = $"{Model.Mitarbeiter.Vorname?.FirstOrDefault()}{Model.Mitarbeiter.Nachname?.FirstOrDefault()}".ToUpper();
+                <div class="d-flex align-items-center gap-3 my-3">
+                    <div class="sd-crew-avatar">
+                        @initials
+                    </div>
+                    <div>
+                        <div class="sd-crew-status">
+                            <span class="sd-mini-dot"></span> IM DIENST
+                        </div>
+                        <h4 class="sd-crew-name mb-0">@Model.Mitarbeiter.Name</h4>
+                        <div class="sd-crew-dept">@Model.Mitarbeiter.Fachbereich</div>
+                    </div>
+                </div>
+                <div class="small text-secondary mb-3">
+                    <strong>E-Mail:</strong> <a href="mailto:@Model.Mitarbeiter.Email" class="text-info">@Model.Mitarbeiter.Email</a>
+                </div>
+                <a asp-controller="Mitarbeiter" asp-action="Details" asp-route-id="@Model.Mitarbeiter.ID" class="sd-btn-outline-action w-100 justify-content-center">
+                    Mitarbeiterprofil anzeigen &rarr;
+                </a>
+            }
+            else
+            {
+                <div class="py-4 text-center">
+                    <div class="sd-join-icon mx-auto mb-2" style="width: 36px; height: 36px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                    </div>
+                    <div class="text-white fw-bold">Unzugewiesener Ticket-Pool</div>
+                    <div class="text-secondary small mt-1">Dieses Ticket ist noch keinem Techniker fest zugeordnet.</div>
+                </div>
+            }
+        </div>
 
-    <div class="sd-formular-aktionen">
-        <a asp-action="Delete" asp-route-id="@Model.ID" class="btn btn-outline-dark">Löschen</a>
-        @if (gesperrt)
-        {
-            <form asp-action="WiederOeffnen" asp-route-id="@Model.ID" method="post" class="d-inline">
-                <button type="submit" class="btn btn-outline-akzent">Ticket erneut öffnen</button>
-            </form>
-        }
-        else
-        {
-            <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-dark">Bearbeiten &gt;</a>
-        }
+        <!-- ACTION CONTROLS -->
+        <div class="sd-join-card">
+            <div class="sd-join-kicker mb-3">TICKET-AKTIONEN</div>
+            <div class="d-flex flex-column gap-2">
+                @if (gesperrt)
+                {
+                    <form asp-action="WiederOeffnen" asp-route-id="@Model.ID" method="post">
+                        <button type="submit" class="sd-btn-warning-action w-100 justify-content-center">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                                <path d="M21 3v5h-5"/>
+                                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                                <path d="M3 21v-5h5"/>
+                            </svg>
+                            Ticket erneut öffnen
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.ID" class="sd-btn-submit-crew justify-content-center text-center">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                        Ticket bearbeiten &rarr;
+                    </a>
+                }
+
+                <a asp-action="Delete" asp-route-id="@Model.ID" class="sd-btn-danger-action justify-content-center text-center">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Ticket löschen
+                </a>
+            </div>
+        </div>
     </div>
 </div>

@@ -1,27 +1,96 @@
 @model MEH.Models.Kategorie
 
 @{
-    ViewData["Title"] = "Kategorie – Details";
+    ViewData["Title"] = "Kategorie // " + Model.Name;
+    int ticketCount = Model.Tickets?.Count ?? 0;
 }
 
-<div class="sd-kopf">
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
     <div>
-        <div class="sd-label">Seite 05 // KAT-@Model.ID.ToString("00")</div>
-        <h1 class="sd-seiten-titel">@Model.Name</h1>
+        <div class="sd-squad-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            ROUTING // KAT-@Model.ID.ToString("00")
+        </div>
+        <h1 class="sd-hero-titel mb-1">@Model.Name</h1>
+        <p class="sd-hero-unter mb-0">Themenbereich &middot; @ticketCount verknüpfte@(ticketCount == 1 ? "s" : "") Ticket@(ticketCount == 1 ? "" : "s")</p>
     </div>
-    <a asp-action="Index" class="btn btn-outline-dark">&lt; Zurück zur Übersicht</a>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="sd-btn-outline-action">
+            &larr; Zurück zur Übersicht
+        </a>
+    </div>
 </div>
 
-<div class="sd-formular">
-    <dl class="row">
-        <dt class="col-sm-3">Name</dt>
-        <dd class="col-sm-9">@Model.Name</dd>
-        <dt class="col-sm-3">Kurzbeschreibung</dt>
-        <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.Beschreibung) ? "–" : Model.Beschreibung)</dd>
-    </dl>
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="sd-join-card mb-4">
+            
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="sd-dept-chip fs-6">[ @Model.Name ]</span>
+                    <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 py-1 px-2 font-monospace" style="font-size: 0.72rem;">KAT-@Model.ID.ToString("00")</span>
+                </div>
+                <div class="sd-tech-id">
+                    @ticketCount AKTIVE ZUORDNUNGEN
+                </div>
+            </div>
 
-    <div class="sd-formular-aktionen">
-        <a asp-action="Delete" asp-route-id="@Model.ID" class="btn btn-outline-dark">Löschen</a>
-        <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-dark">Bearbeiten &gt;</a>
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">KURZBESCHREIBUNG &amp; ROUTING-ZWECK</div>
+                        <div class="sd-detail-value" style="font-size: 1rem; line-height: 1.6;">
+                            @(string.IsNullOrWhiteSpace(Model.Beschreibung) ? "– Keine Beschreibung hinterlegt –" : Model.Beschreibung)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">VERKNÜPFTE TICKETS</div>
+                        <div class="sd-detail-value font-monospace text-info fs-5">@ticketCount</div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">LÖSCHBARKEIT (1:N SCHUTZ)</div>
+                        <div class="sd-detail-value">
+                            @if (ticketCount > 0)
+                            {
+                                <span class="text-warning fw-semibold">Gesperrt (@ticketCount Tickets vorhanden)</span>
+                            }
+                            else
+                            {
+                                <span class="text-success fw-semibold">Bereit zum Löschen (0 Tickets)</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center pt-2">
+                <a asp-action="Delete" asp-route-id="@Model.ID" class="sd-btn-danger-action">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Kategorie löschen
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.ID" class="sd-btn-submit-crew">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    Bearbeiten &rarr;
+                </a>
+            </div>
+
+        </div>
     </div>
 </div>
