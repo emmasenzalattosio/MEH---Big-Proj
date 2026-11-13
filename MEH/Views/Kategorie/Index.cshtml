@@ -1,53 +1,167 @@
 @model IEnumerable<MEH.Models.Kategorie>
+@using MEH.Models
 
 @{
-    ViewData["Title"] = "Kategorien";
+    ViewData["Title"] = "Kategorien // Routing";
+    int totalKategorien = Model.Count();
+    int totalTickets = Model.Sum(k => k.Tickets.Count);
 }
 
-<div class="sd-label">[ Klassifizierung // Ticket-Kategorien ]</div>
-<h1 class="sd-hero-titel">Schubladen, die <em>wirklich helfen.</em></h1>
-<p class="sd-intro">„Geht nicht“ ist keine Kategorie. Hier werden Themenbereiche verwaltet, damit jedes Ticket direkt beim richtigen Spezialisten landet.</p>
-
-<div class="sd-karten">
-    @foreach (var item in Model)
-    {
-        <div class="sd-karte">
-            <div class="sd-label">KAT-@item.ID.ToString("00") // @item.Tickets.Count TICKETS</div>
-            <h2 class="sd-karte-titel">@item.Name</h2>
-            <p class="sd-karte-text">@item.Beschreibung</p>
-            <div class="sd-karte-aktionen">
-                <a asp-action="Edit" asp-route-id="@item.ID">Bearbeiten &gt;</a>
-                <span>|</span>
-                <a asp-action="Details" asp-route-id="@item.ID">Details &gt;</a>
-                <span>|</span>
-                <a asp-action="Delete" asp-route-id="@item.ID">Löschen &gt;</a>
-            </div>
+<!-- TOP HERO HEADER -->
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+    <div>
+        <div class="sd-squad-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+            TICKET ROUTING // THEMENBEREICHE
         </div>
-    }
+        <h1 class="sd-hero-titel mb-1">Schubladen, die <em>wirklich helfen.</em></h1>
+        <p class="sd-hero-unter mb-0">
+            <strong>@totalKategorien Kategorien</strong> konfiguriert &nbsp;&middot;&nbsp; 
+            <strong>@totalTickets verknüpfte Tickets</strong> &nbsp;&middot;&nbsp; 
+            „Geht nicht“ ist keine Kategorie.
+        </p>
+    </div>
 
-    @if (!Model.Any())
-    {
-        <div class="sd-karte sd-leer">
-            <div class="sd-label">KAT-00 // LEER</div>
-            <p class="sd-karte-text">Noch keine Kategorien angelegt. Leg unten die erste an.</p>
-        </div>
-    }
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 py-2 px-3 font-monospace" style="font-size: 0.78rem;">
+            1:N REFERENZSCHUTZ AKTIV
+        </span>
+    </div>
 </div>
 
-<!-- Neue Kategorie direkt auf der Übersicht anlegen -->
-<form asp-action="Create" class="sd-neu-leiste">
-    <div class="sd-neu-feld">
-        <div class="sd-label">Neue Kategorie anlegen //</div>
-        <label class="form-label" for="neu-name">Name der Kategorie *</label>
-        <input class="form-control" id="neu-name" name="Name" placeholder="z. B. Telefonie" maxlength="50" />
+<!-- TWO-COLUMN ASYMMETRIC GRID: CATEGORY CARDS (LEFT 65%) + REGISTER FORM (RIGHT 35%) -->
+<div class="row g-4">
+
+    <!-- LEFT: CATEGORIES LIST -->
+    <div class="col-12 col-lg-7 col-xl-8">
+        <div class="row g-3">
+            @foreach (var item in Model)
+            {
+                var ticketCount = item.Tickets.Count;
+
+                <div class="col-12 col-md-6">
+                    <div class="sd-crew-card">
+                        
+                        <!-- CARD TOP: ICON & TITLE -->
+                        <div>
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="sd-join-icon" style="width: 40px; height: 40px;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>
+                                    </svg>
+                                </div>
+                                <div class="d-flex align-items-center gap-1">
+                                    <a asp-action="Delete" asp-route-id="@item.ID" class="sd-icon-btn text-muted" title="Löschen">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"/>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="sd-crew-status">
+                                <span class="sd-mini-dot"></span> THEMENFELD #@item.ID.ToString("00")
+                            </div>
+                            <h3 class="sd-crew-name">@item.Name</h3>
+                            <p class="small text-secondary mb-3" style="min-height: 2.4rem; line-height: 1.4;">
+                                @(string.IsNullOrWhiteSpace(item.Beschreibung) ? "Keine zusätzliche Beschreibung hinterlegt." : item.Beschreibung)
+                            </p>
+                        </div>
+
+                        <!-- BADGE & TICKET COUNT -->
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
+                                <span class="sd-dept-chip">@ticketCount @(ticketCount == 1 ? "Ticket" : "Tickets")</span>
+                                <span class="sd-tech-id">KAT-@item.ID.ToString("00")</span>
+                            </div>
+
+                            <!-- CARD FOOTER ACTIONS -->
+                            <div class="d-flex gap-2 mt-3 pt-1">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="sd-btn-outline-action flex-grow-0">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                    </svg>
+                                    Bearbeiten
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="sd-btn-view-assignments flex-grow-1">
+                                    Details ansehen &rarr;
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+            @if (!Model.Any())
+            {
+                <div class="col-12">
+                    <div class="sd-crew-card text-center py-5 text-secondary">
+                        Bislang sind noch keine Kategorien vorhanden. Erstelle rechts die erste Kategorie.
+                    </div>
+                </div>
+            }
+        </div>
     </div>
-    <div class="sd-neu-feld">
-        <div class="sd-label">&nbsp;</div>
-        <label class="form-label" for="neu-beschreibung">Kurzbeschreibung</label>
-        <input class="form-control" id="neu-beschreibung" name="Beschreibung" placeholder="Wofür wird diese Kategorie genutzt?" maxlength="500" />
+
+    <!-- RIGHT: QUICK CREATE CATEGORY FORM -->
+    <div class="col-12 col-lg-5 col-xl-4">
+        <div class="sd-join-card">
+            
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="sd-join-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="sd-join-kicker">ROUTING ERWEITERN</div>
+                    <div class="sd-join-title fs-5">Neue Kategorie</div>
+                </div>
+            </div>
+
+            <p class="sd-join-text mb-4">
+                Lege einen neuen Themenbereich an, um Störungen präzise zu klassifizieren und Routing-Konflikte zu vermeiden.
+            </p>
+
+            <form asp-action="Create" method="post">
+                <div class="mb-3">
+                    <label class="sd-input-label" for="Name">NAME DER KATEGORIE *</label>
+                    <input class="sd-glass-input" id="Name" name="Name" placeholder="z. B. Netzwerk, ERP, Telefonie" maxlength="50" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="sd-input-label" for="Beschreibung">KURZBESCHREIBUNG</label>
+                    <textarea class="sd-glass-input" id="Beschreibung" name="Beschreibung" rows="3" placeholder="Wofür wird diese Kategorie genutzt?" maxlength="500"></textarea>
+                </div>
+
+                <button type="submit" class="sd-btn-submit-crew w-100 mb-3">
+                    + Kategorie speichern &rarr;
+                </button>
+            </form>
+
+            <!-- 1:N REFERENCE SHIELD -->
+            <div class="sd-ref-shield">
+                <div class="sd-shield-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                </div>
+                <div class="small">
+                    <div class="fw-bold text-white mb-1">1:n Schutzregel</div>
+                    <div class="text-secondary" style="font-size: 0.8rem;">
+                        Kategorien mit zugewiesenen Tickets können nicht gelöscht werden, um verwaiste Datenbestände auszuschließen.
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
-    <div class="sd-neu-feld sd-neu-aktion">
-        <button type="submit" class="btn btn-akzent w-100">+ Kategorie speichern</button>
-        <p class="sd-klein">Kategorien mit verknüpften Tickets sind vor versehentlichem Löschen geschützt.</p>
-    </div>
-</form>
+
+</div>

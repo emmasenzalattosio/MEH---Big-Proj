@@ -1,56 +1,106 @@
 @model MEH.Models.Mitarbeiter
 
 @{
-    ViewData["Title"] = "Neuer Mitarbeiter";
+    ViewData["Title"] = "Neuen Mitarbeiter erfassen";
 }
 
-<div class="sd-kopf">
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
     <div>
-        <div class="sd-label">Seite 04 // Views/Mitarbeiter/Create.cshtml</div>
-        <h1 class="sd-seiten-titel">Neuer <em>Mitarbeiter</em></h1>
+        <div class="sd-squad-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <line x1="19" y1="8" x2="19" y2="14"/>
+                <line x1="22" y1="11" x2="16" y2="11"/>
+            </svg>
+            TEAM MANAGEMENT // SQUAD-REKRUTIERUNG
+        </div>
+        <h1 class="sd-hero-titel mb-1">Neuen Techniker registrieren</h1>
+        <p class="sd-hero-unter mb-0">Lege ein neues Crew-Profil an und aktiviere den Zugang zum Ticket-Routing.</p>
     </div>
-    <a asp-action="Index" class="btn btn-outline-dark">&lt; Zurück zur Übersicht</a>
+    <a asp-action="Index" class="sd-btn-outline-action">
+        &larr; Zurück zur Übersicht
+    </a>
 </div>
 
-<div class="sd-formular">
-    <form asp-action="Create">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="row g-3">
-            <div class="col-md-6 form-group">
-                <label asp-for="Vorname" class="form-label">Vorname *</label>
-                <input asp-for="Vorname" class="form-control" />
-                <span asp-validation-for="Vorname" class="text-danger"></span>
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="sd-join-card">
+            
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="sd-join-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="sd-join-kicker">TEAM-ERWEITERUNG</div>
+                    <div class="sd-join-title fs-5">Mitarbeiter Stammdaten</div>
+                </div>
             </div>
-            <div class="col-md-6 form-group">
-                <label asp-for="Nachname" class="form-label">Nachname *</label>
-                <input asp-for="Nachname" class="form-control" />
-                <span asp-validation-for="Nachname" class="text-danger"></span>
-            </div>
-        </div>
 
-        <div class="form-group">
-            <label asp-for="Email" class="form-label">E-Mail-Adresse *</label>
-            <input asp-for="Email" type="email" class="form-control" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="sd-flash sd-flash-fehler"></div>
 
-        <div class="form-group">
-            <label asp-for="Fachbereich" class="form-label">Fachbereich *</label>
-            <input asp-for="Fachbereich" class="form-control" placeholder="z. B. Netzwerk, Hardware" />
-            <span asp-validation-for="Fachbereich" class="text-danger"></span>
-        </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Vorname" class="sd-input-label">VORNAME *</label>
+                        <input asp-for="Vorname" class="sd-glass-input" placeholder="z. B. Lena" />
+                        <span asp-validation-for="Vorname" class="text-danger small fw-semibold"></span>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label asp-for="Nachname" class="sd-input-label">NACHNAME *</label>
+                        <input asp-for="Nachname" class="sd-glass-input" placeholder="z. B. Weber" />
+                        <span asp-validation-for="Nachname" class="text-danger small fw-semibold"></span>
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <label asp-for="Password" class="form-label">Passwort *</label>
-            <input asp-for="Password" type="password" class="form-control" />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="sd-input-label">E-MAIL-ADRESSE *</label>
+                    <input asp-for="Email" type="email" class="sd-glass-input" placeholder="name@servicedesk.de" />
+                    <span asp-validation-for="Email" class="text-danger small fw-semibold"></span>
+                </div>
 
-        <div class="sd-formular-aktionen">
-            <a asp-action="Index" class="btn btn-outline-dark">Abbrechen</a>
-            <button type="submit" class="btn btn-dark">Mitarbeiter anlegen &gt;</button>
+                <div class="mb-3">
+                    <label asp-for="Fachbereich" class="sd-input-label">FACHBEREICH / SPEZIALISIERUNG *</label>
+                    <input asp-for="Fachbereich" class="sd-glass-input" placeholder="z. B. Netzwerk &amp; Infrastruktur, Hardware, First-Level" />
+                    <span asp-validation-for="Fachbereich" class="text-danger small fw-semibold"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Password" class="sd-input-label">PASSWORT *</label>
+                    <input asp-for="Password" type="password" class="sd-glass-input" placeholder="Sicheres Kennwort vergeben" />
+                    <span asp-validation-for="Password" class="text-danger small fw-semibold"></span>
+                </div>
+
+                <!-- 1:N REFERENCE SHIELD -->
+                <div class="sd-ref-shield mb-4">
+                    <div class="sd-shield-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </div>
+                    <div class="small">
+                        <div class="fw-bold text-white mb-1">Automatische Routing-Bereitschaft</div>
+                        <div class="text-secondary" style="font-size: 0.8rem;">
+                            Nach dem Anlegen steht der Techniker sofort im Dropdown bei der Ticketerfassung zur Auswahl bereit.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center pt-2">
+                    <a asp-action="Index" class="sd-btn-outline-action">Abbrechen</a>
+                    <button type="submit" class="sd-btn-submit-crew">
+                        Techniker registrieren &rarr;
+                    </button>
+                </div>
+            </form>
+
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {

@@ -1,38 +1,58 @@
 @model MEH.Models.Kategorie
 
 @{
-    ViewData["Title"] = "Neue Kategorie";
+    ViewData["Title"] = "Neue Kategorie anlegen";
 }
 
-<div class="sd-kopf">
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
     <div>
-        <div class="sd-label">Seite 05 // Views/Kategorie/Create.cshtml</div>
-        <h1 class="sd-seiten-titel">Neue <em>Kategorie</em></h1>
+        <div class="sd-squad-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            ROUTING MANAGEMENT // NEUE KATEGORIE
+        </div>
+        <h1 class="sd-hero-titel mb-1">Neue Kategorie anlegen</h1>
+        <p class="sd-hero-unter mb-0">Erstelle einen neuen Themenbereich für das gezielte Ticket-Routing.</p>
     </div>
-    <a asp-action="Index" class="btn btn-outline-dark">&lt; Zurück zur Übersicht</a>
+    <a asp-action="Index" class="sd-btn-outline-action">
+        &larr; Zurück zur Übersicht
+    </a>
 </div>
 
-<div class="sd-formular">
-    <form asp-action="Create">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="sd-join-card">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="sd-flash sd-flash-fehler"></div>
 
-        <div class="form-group">
-            <label asp-for="Name" class="form-label">Name der Kategorie *</label>
-            <input asp-for="Name" class="form-control" placeholder="z. B. Telefonie" />
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
+                <div class="mb-3">
+                    <label asp-for="Name" class="sd-input-label">NAME DER KATEGORIE *</label>
+                    <input asp-for="Name" class="sd-glass-input" placeholder="z. B. Netzwerk, Hardware, Telefonie" />
+                    <span asp-validation-for="Name" class="text-danger small fw-semibold"></span>
+                </div>
 
-        <div class="form-group">
-            <label asp-for="Beschreibung" class="form-label">Kurzbeschreibung</label>
-            <textarea asp-for="Beschreibung" class="form-control" rows="3" placeholder="Wofür wird diese Kategorie genutzt?"></textarea>
-            <span asp-validation-for="Beschreibung" class="text-danger"></span>
-        </div>
+                <div class="mb-4">
+                    <label asp-for="Beschreibung" class="sd-input-label">KURZBESCHREIBUNG</label>
+                    <textarea asp-for="Beschreibung" class="sd-glass-input" rows="4" placeholder="Wofür wird diese Kategorie genutzt? Welche Störungsfälle gehören hierhin?"></textarea>
+                    <span asp-validation-for="Beschreibung" class="text-danger small fw-semibold"></span>
+                </div>
 
-        <div class="sd-formular-aktionen">
-            <a asp-action="Index" class="btn btn-outline-dark">Abbrechen</a>
-            <button type="submit" class="btn btn-dark">Kategorie speichern &gt;</button>
+                <div class="d-flex justify-content-between align-items-center pt-2">
+                    <a asp-action="Index" class="sd-btn-outline-action">Abbrechen</a>
+                    <button type="submit" class="sd-btn-submit-crew">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        Kategorie anlegen &rarr;
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {

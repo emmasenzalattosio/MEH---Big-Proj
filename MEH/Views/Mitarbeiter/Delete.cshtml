@@ -1,40 +1,124 @@
 @model MEH.Models.Mitarbeiter
 
 @{
-    ViewData["Title"] = "Mitarbeiter löschen";
+    ViewData["Title"] = "Mitarbeiter löschen // " + Model.Name;
+    bool hasTickets = Model.Tickets.Any();
+    var initials = $"{Model.Vorname?.FirstOrDefault()}{Model.Nachname?.FirstOrDefault()}".ToUpper();
+    if (string.IsNullOrWhiteSpace(initials)) { initials = "IT"; }
 }
 
-<div class="sd-kopf">
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
     <div>
-        <div class="sd-label">Seite 04 // #EMP-@Model.ID.ToString("00")</div>
-        <h1 class="sd-seiten-titel">Mitarbeiter <em>löschen?</em></h1>
+        <div class="sd-squad-tag text-danger">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            SICHERHEITSABFRAGE // 1:N REFERENZSCHUTZ
+        </div>
+        <h1 class="sd-hero-titel mb-1">Mitarbeiter <span class="text-danger">löschen?</span></h1>
+        <p class="sd-hero-unter mb-0">Überprüfung der Datenbank-Integrität für Techniker <strong>@Model.Name</strong></p>
     </div>
-    <a asp-action="Index" class="btn btn-outline-dark">&lt; Zurück zur Übersicht</a>
+    <a asp-action="Index" class="sd-btn-outline-action">
+        &larr; Zurück zur Übersicht
+    </a>
 </div>
 
-<div class="sd-formular">
-    <div class="sd-hinweis mb-4">
-        <div class="sd-label sd-label-akzent">■ Datenbank-Regel // 1:n Referenzschutz</div>
-        <p class="mb-0 mt-2">Mitarbeiter mit zugewiesenen Tickets können nicht gelöscht werden.
-            @if (Model.Tickets.Any())
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="sd-join-card" style="border-color: rgba(239, 68, 68, 0.3);">
+            
+            @if (hasTickets)
             {
-                <br /><strong>Diesem Mitarbeiter sind noch @Model.Tickets.Count Ticket(s) zugewiesen – das Löschen wird abgelehnt.</strong>
+                <div class="sd-danger-shield mb-4">
+                    <div class="sd-danger-shield-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="fw-bold text-white mb-1">1:n Referenzschutz aktiv – Löschen abgelehnt</div>
+                        <div class="text-secondary small">
+                            Diesem Mitarbeiter sind aktuell noch <strong>@Model.Tickets.Count Ticket(s)</strong> zugewiesen. Damit kein Ticket herrenlos im System verwaist, verweigert die Datenbank die Löschung. Bitte weisen Sie die Tickets zuerst einem anderen Techniker zu oder leiten Sie sie in den unzugewiesenen Pool.
+                        </div>
+                    </div>
+                </div>
             }
-        </p>
+            else
+            {
+                <div class="sd-danger-shield mb-4">
+                    <div class="sd-danger-shield-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="fw-bold text-white mb-1">Unwiderruflicher Löschvorgang</div>
+                        <div class="text-secondary small">
+                            Diesem Mitarbeiter sind keine offenen Tickets zugeordnet. Das Benutzer- und Technikerprofil kann dauerhaft gelöscht werden.
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- PROFILE PREVIEW -->
+            <div class="d-flex align-items-center gap-3 p-3 rounded mb-4" style="background: rgba(11, 15, 28, 0.65); border: 1px solid rgba(255, 255, 255, 0.08);">
+                <div class="sd-crew-avatar">
+                    @initials
+                </div>
+                <div>
+                    <h4 class="sd-crew-name mb-0">@Model.Name</h4>
+                    <div class="sd-tech-id">TECH-@initials &middot; #EMP-@Model.ID.ToString("00")</div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">E-MAIL-ADRESSE</div>
+                        <div class="sd-detail-value font-monospace text-info">@Model.Email</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">FACHBEREICH</div>
+                        <div class="sd-detail-value">@Model.Fachbereich</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">AKTIVE TICKETS</div>
+                        <div class="sd-detail-value font-monospace @(hasTickets ? "text-danger" : "text-success") fs-5">
+                            @Model.Tickets.Count Zuweisungen
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="sd-detail-item">
+                        <div class="sd-detail-label">STATUS IM SYSTEM</div>
+                        <div class="sd-detail-value text-secondary">Registrierter Techniker</div>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="Delete" method="post" class="d-flex justify-content-between align-items-center pt-2">
+                <input type="hidden" asp-for="ID" />
+                <a asp-action="Index" class="sd-btn-outline-action">
+                    Abbrechen
+                </a>
+                <button type="submit" class="sd-btn-danger-action">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Endgültig löschen
+                </button>
+            </form>
+
+        </div>
     </div>
-
-    <dl class="row">
-        <dt class="col-sm-3">Name</dt>
-        <dd class="col-sm-9">@Model.Vorname @Model.Nachname</dd>
-        <dt class="col-sm-3">E-Mail</dt>
-        <dd class="col-sm-9">@Model.Email</dd>
-        <dt class="col-sm-3">Fachbereich</dt>
-        <dd class="col-sm-9">@Model.Fachbereich</dd>
-    </dl>
-
-    <form asp-action="Delete" class="sd-formular-aktionen">
-        <input type="hidden" asp-for="ID" />
-        <a asp-action="Index" class="btn btn-outline-dark">Abbrechen</a>
-        <button type="submit" class="btn btn-dark">Endgültig löschen</button>
-    </form>
 </div>
