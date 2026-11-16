@@ -19,7 +19,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MEH.styles.css" asp-append-version="true" />
 </head>
 <body>
     <!-- Hintergrund-Looping-Video -->
@@ -48,7 +47,7 @@
             </a>
             <nav class="sd-nav">
                 <a class="@(isDashboard ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Ticket" asp-action="Index">Dashboard</a>
-                <a class="@(isTickets ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Ticket" asp-action="Index">Tickets</a>
+                <a class="@(isTickets ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Ticket" asp-action="Index" asp-fragment="tickets">Tickets</a>
                 <a class="@(isMitarbeiter ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Mitarbeiter" asp-action="Index">Mitarbeiter</a>
                 <a class="@(isKategorie ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Kategorie" asp-action="Index">Kategorien</a>
             </nav>
