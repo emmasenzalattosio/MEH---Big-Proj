@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MEH.Models;
 
-
 namespace MEH.Controllers
 {
     public class MitarbeiterController : Controller
@@ -14,9 +13,10 @@ namespace MEH.Controllers
             _context = context;
         }
 
-        // GET: Mitarbeiter
+        // GET: Mitarbeiter (Lists all employees + loads categories list into ViewBag for side-by-side display)
         public async Task<IActionResult> Index()
         {
+            // ViewBag carries the categories list as an extra backpack so the HTML view can show both tables!
             ViewBag.KategorienListe = await _context.Kategorie
                 .Include(k => k.Tickets)
                 .OrderBy(k => k.Name)
@@ -70,9 +70,7 @@ namespace MEH.Controllers
         {
             if (id == null) return NotFound();
 
-
             var mitarbeiter = await _context.Mitarbeiter.FindAsync(id);
-
             if (mitarbeiter == null) return NotFound();
 
             return View(mitarbeiter);
@@ -90,7 +88,6 @@ namespace MEH.Controllers
                 _context.Update(mitarbeiter);
                 await _context.SaveChangesAsync();
                 TempData["Erfolg"] = $"Mitarbeiter {mitarbeiter.Name} wurde aktualisiert.";
-
                 return RedirectToAction(nameof(Index));
             }
             return View(mitarbeiter);
@@ -100,7 +97,6 @@ namespace MEH.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-
 
             var mitarbeiter = await _context.Mitarbeiter
                 .Include(m => m.Tickets)
@@ -112,18 +108,20 @@ namespace MEH.Controllers
         }
 
         // POST: Mitarbeiter/Delete/5
+        // PFLICHT-GESCHÄFTSREGEL 2:
+        // An employee with assigned tickets CANNOT be deleted!
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            // Tickets mitladen, sonst ist die Liste leer und die Löschregel greift nicht
+            // We MUST use Include(m => m.Tickets), otherwise the tickets list would be empty in C# and the rule wouldn't work!
             var mitarbeiter = await _context.Mitarbeiter
                 .Include(m => m.Tickets)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
             if (mitarbeiter != null)
             {
-                // Löschregel: Mitarbeiter mit zugewiesenen Tickets dürfen nicht gelöscht werden
+                // Check if any tickets are still assigned to this person
                 if (mitarbeiter.Tickets.Any())
                 {
                     TempData["Fehler"] = $"{mitarbeiter.Name} kann nicht gelöscht werden: Ihm/ihr sind noch {mitarbeiter.Tickets.Count} Ticket(s) zugewiesen. Bitte die Tickets zuerst neu zuweisen.";
@@ -135,7 +133,5 @@ namespace MEH.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
-
     }
 }

@@ -1,7 +1,9 @@
 @{
-    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
-    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    // Saving in variables makes code simpler so I don't have to copy-paste the same long shi every time
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? ""; // <- grabs current controller (e.g. "Ticket" or "Mitarbeiter")
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";         // <- grabs current action (e.g. "Index" or "Create")
 
+    // Is there for the light-up action: when on a specific page, it turns true and puff makes color!
     bool isDashboard = (controller == "Home" && action == "Index") || (controller == "Ticket" && action == "Index");
     bool isTickets = controller == "Ticket" && action != "Index" && action != "Create";
     bool isMitarbeiter = controller == "Mitarbeiter";
@@ -11,14 +13,18 @@
 <!DOCTYPE html>
 <html lang="de" data-bs-theme="dark">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] – ServiceDesk</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <meta charset="utf-8" /> @* reads special characters like ä, ö, ü, ß so text doesn't look broken *@
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> @* adjusts the website to every screen size (responsive) *@
+    <title>@ViewData["Title"] – ServiceDesk</title> @* title on the browser tab at the very top *@
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" /> @* connects early to Google so fonts load faster *@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @* thank god for bootstrap, gives us ready-to-use components and class names so we don't code CSS from scratch *@
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> @* our own custom styles: dark mode, neon purple, borders *@
     <link rel="stylesheet" href="~/MEH.styles.css" asp-append-version="true" />
 </head>
 <body>
@@ -26,20 +32,21 @@
     <video class="sd-bg-video" autoplay muted loop playsinline preload="auto">
         <source src="~/bg-hex.mp4" type="video/mp4" />
     </video>
-    <div class="sd-bg-overlay"></div>
+    <div class="sd-bg-overlay"></div> @* dark tint over video so text is readable *@
 
     <div class="sd-rahmen">
 
-        <!-- Meta-Zeile -->
+        <!-- Meta-Zeile: Shows current route & funny Dortmund location info -->
         <div class="sd-meta">
             <span>ASP.NET CORE MVC | ROUTE: GET /@controller/@action</span>
             <span>STANDORT DORTMUND · WESTFALEN OFFICE SOLUTIONS</span>
         </div>
 
-        <!-- Hauptnavigation -->
+        <!-- Hauptnavigation: Top navbar with brand logo & page links -->
         <header class="sd-header">
             <a class="sd-brand" asp-controller="Ticket" asp-action="Index">
                 <span class="sd-brand-icon">
+                    @* That svg thing draws the little headset icon next to ServiceDesk! *@
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>
                     </svg>
@@ -47,6 +54,7 @@
                 <span>ServiceDesk</span>
             </a>
             <nav class="sd-nav">
+                @* If isDashboard is true, it gives 'aktiv' class which lights up the box in bright blue! *@
                 <a class="@(isDashboard ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Ticket" asp-action="Index">Dashboard</a>
                 <a class="@(isTickets ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Ticket" asp-action="Index" asp-fragment="tickets">Tickets</a>
                 <a class="@(isMitarbeiter ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Mitarbeiter" asp-action="Index">Mitarbeiter</a>
@@ -54,6 +62,7 @@
             </nav>
 
             <div class="d-flex align-items-center">
+                @* Checks if user is logged in: if YES show name & logout button, if NO show login button *@
                 @if (User.Identity?.IsAuthenticated == true)
                 {
                     <span class="sd-nav-link text-white d-flex align-items-center gap-2" style="background: transparent; border-right: 1px solid var(--sd-linie);">
@@ -86,6 +95,7 @@
         </header>
 
         <main role="main" class="sd-main">
+            @* Flash messages from controllers: TempData shows green when saved, or red when an error happens *@
             @if (TempData["Erfolg"] is string erfolg)
             {
                 <div class="sd-flash sd-flash-ok">✓ @erfolg</div>
@@ -94,6 +104,8 @@
             {
                 <div class="sd-flash sd-flash-fehler">■ @fehler</div>
             }
+
+            @* This is where ASP.NET injects the actual page (Index.cshtml, Create.cshtml, etc.) *@
             @RenderBody()
         </main>
 
@@ -103,6 +115,7 @@
         </footer>
     </div>
 
+    @* JavaScript files loaded at bottom so the website doesn't freeze while loading scripts *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
