@@ -38,8 +38,8 @@
 
         <!-- Meta-Zeile: Shows current route & funny Dortmund location info -->
         <div class="sd-meta">
-            <span>ASP.NET CORE MVC | ROUTE: GET /@controller/@action</span>
-            <span>STANDORT DORTMUND · WESTFALEN OFFICE SOLUTIONS</span>
+            <span>ASP.NET CORE MVC | ROUTE: FOLLOW YOUR DREAMS</span>
+            <span>STANDORT YOUR HEART · MEH OFFICE SOLUTIONS</span>
         </div>
 
         <!-- Hauptnavigation: Top navbar with brand logo & page links -->
@@ -56,7 +56,6 @@
             <nav class="sd-nav">
                 @* If isDashboard is true, it gives 'aktiv' class which lights up the box in bright blue! *@
                 <a class="@(isDashboard ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Ticket" asp-action="Index">Dashboard</a>
-                <a class="@(isTickets ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Ticket" asp-action="Index" asp-fragment="tickets">Tickets</a>
                 <a class="@(isMitarbeiter ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Mitarbeiter" asp-action="Index">Mitarbeiter</a>
                 <a class="@(isKategorie ? "sd-nav-link aktiv" : "sd-nav-link")" asp-controller="Kategorie" asp-action="Index">Kategorien</a>
             </nav>
@@ -90,7 +89,7 @@
                         Login
                     </a>
                 }
-                <a class="sd-melden" asp-controller="Ticket" asp-action="Create">+ Neues Ticket</a>
+                <a class="sd-melden" asp-controller="Ticket" asp-action="Create">+ New Ticket</a>
             </div>
         </header>
 
@@ -110,8 +109,8 @@
         </main>
 
         <footer class="sd-footer">
-            <span>WOS / DORTMUND · INTERN. NÜCHTERN. NACHVOLLZIEHBAR.</span>
-            <span>&copy; @DateTime.Now.Year SERVICEDESK · <a asp-controller="Home" asp-action="Privacy">DATENSCHUTZ</a></span>
+            <span>WOS / DORTMUND · WORK??. MEH. NACHVOLLZIEHBAR.</span>
+            <span>&copy; @DateTime.Now.Year MEH.SOLUTIONS · <a asp-controller="Home" asp-action="Privacy">DATEN-UNSCHUTZ</a></span>
         </footer>
     </div>
 

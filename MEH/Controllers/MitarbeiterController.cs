@@ -45,12 +45,13 @@ namespace MEH.Controllers
         }
 
         // GET: Mitarbeiter/Create
+        // Not needed as a separate page anymore because we have the quick registration card directly on Index!
         public IActionResult Create()
         {
-            return View();
+            return RedirectToAction(nameof(Index));
         }
 
-        // POST: Mitarbeiter/Create
+        // POST: Mitarbeiter/Create (Submits data directly from the quick registration card on Index)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Vorname,Nachname,Email,Password,Fachbereich")] Mitarbeiter mitarbeiter)
@@ -62,7 +63,8 @@ namespace MEH.Controllers
                 TempData["Erfolg"] = $"Mitarbeiter {mitarbeiter.Name} wurde angelegt.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(mitarbeiter);
+            TempData["Fehler"] = "Bitte alle Pflichtfelder für den neuen Mitarbeiter korrekt ausfüllen.";
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Mitarbeiter/Edit/5

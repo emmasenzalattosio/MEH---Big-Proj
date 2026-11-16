@@ -17,10 +17,7 @@ namespace MEH.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        public IActionResult Privacy() { return RedirectToAction("Index", "Ticket"); }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -30,3 +27,4 @@ namespace MEH.Controllers
         }
     }
 }
+

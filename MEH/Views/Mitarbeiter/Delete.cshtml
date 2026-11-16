@@ -16,10 +16,10 @@
                 <line x1="12" y1="9" x2="12" y2="13"/>
                 <line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
-            SICHERHEITSABFRAGE // 1:N REFERENZSCHUTZ
+            SICHERHEITSABFRAGE 
         </div>
-        <h1 class="sd-hero-titel mb-1">Mitarbeiter <span class="text-danger">löschen?</span></h1>
-        <p class="sd-hero-unter mb-0">Überprüfung der Datenbank-Integrität für Techniker <strong>@Model.Name</strong></p>
+        <h1 class="sd-hero-titel mb-1">Mitarbeiter <span class="text-danger">kündigen?</span></h1>
+        <p class="sd-hero-unter mb-0">Überprüfung der Datenbank-Integrität für (un)Techniker <strong>@Model.Name</strong></p>
     </div>
     <a asp-action="Index" class="sd-btn-outline-action">
         &larr; Zurück zur Übersicht
@@ -40,9 +40,9 @@
                         </svg>
                     </div>
                     <div>
-                        <div class="fw-bold text-white mb-1">1:n Referenzschutz aktiv – Löschen abgelehnt</div>
+                        <div class="fw-bold text-white mb-1">Löschen abgelehnt</div>
                         <div class="text-secondary small">
-                            Diesem Mitarbeiter sind aktuell noch <strong>@Model.Tickets.Count Ticket(s)</strong> zugewiesen. Damit kein Ticket herrenlos im System verwaist, verweigert die Datenbank die Löschung. Bitte weisen Sie die Tickets zuerst einem anderen Techniker zu oder leiten Sie sie in den unzugewiesenen Pool.
+                            This slave has still <strong>@Model.Tickets.Count Ticket(s)</strong> open. Pls take care first of the open tickets then come back to fire this ahole!!.
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                     <div>
                         <div class="fw-bold text-white mb-1">Unwiderruflicher Löschvorgang</div>
                         <div class="text-secondary small">
-                            Diesem Mitarbeiter sind keine offenen Tickets zugeordnet. Das Benutzer- und Technikerprofil kann dauerhaft gelöscht werden.
+                            Diesem Mitarbeiter sind keine offenen Tickets zugeordnet. Das Benutzer und (un)Technikerprofil kann dauerhaft gekundigt werden.
                         </div>
                     </div>
                 </div>
@@ -115,7 +115,7 @@
                         <polyline points="3 6 5 6 21 6"/>
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                     </svg>
-                    Endgültig löschen
+                    Endgültig Kündigen
                 </button>
             </form>
 
