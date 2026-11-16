@@ -14,7 +14,7 @@
                 <line x1="12" y1="9" x2="12" y2="13"/>
                 <line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
-            SICHERHEITSABFRAGE // 1:N REFERENZSCHUTZ
+            SICHERHEITSABFRAGE
         </div>
         <h1 class="sd-hero-titel mb-1">Kategorie <span class="text-danger">löschen?</span></h1>
         <p class="sd-hero-unter mb-0">Überprüfung der Datenbank-Integrität für Themenbereich <strong>@Model.Name</strong></p>
@@ -40,7 +40,7 @@
                     <div>
                         <div class="fw-bold text-white mb-1">1:n Referenzschutz aktiv – Löschen blockiert</div>
                         <div class="text-secondary small">
-                            Dieser Kategorie sind aktuell noch <strong>@Model.Tickets.Count Ticket(s)</strong> zugeordnet. Um Inkonsistenzen und verwaiste Datensätze zu verhindern, lehnt die Datenbank das Löschen ab. Bitte weisen Sie die betroffenen Tickets zuerst einer anderen Kategorie zu.
+                           This category still has <strong>@Model.Tickets.Count Ticket(s)</strong> open tickets. Pls first close the open tickets to then close the category.
                         </div>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
                     <div>
                         <div class="fw-bold text-white mb-1">Unwiderruflicher Löschvorgang</div>
                         <div class="text-secondary small">
-                            Diese Kategorie besitzt keine verknüpften Tickets und kann dauerhaft entfernt werden.
+                            No open ticktes, gg you can delete.
                         </div>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
                         <polyline points="3 6 5 6 21 6"/>
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                     </svg>
-                    Endgültig löschen
+                    Löschen
                 </button>
             </form>
 

@@ -33,12 +33,13 @@ namespace MEH.Controllers
         }
 
         // GET: Kategorie/Create
+        // Not needed as a separate page because we have the quick-create card directly on Index!
         public IActionResult Create()
         {
-            return View();
+            return RedirectToAction(nameof(Index));
         }
 
-        // POST: Kategorie/Create
+        // POST: Kategorie/Create (Submitted directly by the quick-create card on Index)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Name,Beschreibung")] Kategorie kategorie)
@@ -50,7 +51,8 @@ namespace MEH.Controllers
                 TempData["Erfolg"] = $"Kategorie „{kategorie.Name}“ wurde angelegt.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(kategorie);
+            TempData["Fehler"] = "Bitte füllen Sie alle erforderlichen Felder für die Kategorie aus.";
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Kategorie/Edit/5
