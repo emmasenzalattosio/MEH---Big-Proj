@@ -16,7 +16,7 @@ namespace MEH.Controllers
             _context = context;
         }
 
-        // GET: /Account/Login oder /Account/Login?tab=register
+        // GET: /Account/Login
         [HttpGet]
         public IActionResult Login(string? tab = "login", string? returnUrl = null)
         {
@@ -26,18 +26,10 @@ namespace MEH.Controllers
             }
 
             ViewData["ReturnUrl"] = returnUrl;
-            var vm = new AuthPageViewModel
+            return View(new AuthPageViewModel
             {
                 ActiveTab = (tab?.ToLower() == "register") ? "register" : "login"
-            };
-            return View(vm);
-        }
-
-        // GET: /Account/Register (Shortcut zur Registrierung)
-        [HttpGet]
-        public IActionResult Register(string? returnUrl = null)
-        {
-            return RedirectToAction(nameof(Login), new { tab = "register", returnUrl });
+            });
         }
 
         // POST: /Account/Login
@@ -47,15 +39,9 @@ namespace MEH.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            if (string.IsNullOrWhiteSpace(login.Email) || string.IsNullOrWhiteSpace(login.Password))
-            {
-                ModelState.AddModelError("Login.Email", "Bitte gib deine E-Mail und dein Passwort ein.");
-                return View(new AuthPageViewModel { Login = login, ActiveTab = "login" });
-            }
-
-            var cleanEmail = login.Email.Trim().ToLower();
+            // 1. Check if user exists in database
             var mitarbeiter = await _context.Mitarbeiter
-                .FirstOrDefaultAsync(m => m.Email.ToLower() == cleanEmail && m.Password == login.Password);
+                .FirstOrDefaultAsync(m => m.Email.ToLower() == login.Email.Trim().ToLower() && m.Password == login.Password);
 
             if (mitarbeiter == null)
             {
@@ -63,7 +49,7 @@ namespace MEH.Controllers
                 return View(new AuthPageViewModel { Login = login, ActiveTab = "login" });
             }
 
-            // Claims erzeugen
+            // 2. Create Cookie Login (Who is logged in?)
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, mitarbeiter.ID.ToString()),
@@ -72,16 +58,8 @@ namespace MEH.Controllers
                 new Claim(ClaimTypes.Role, mitarbeiter.Rolle.ToString())
             };
 
-            var authProps = new AuthenticationProperties
-            {
-                IsPersistent = login.RememberMe,
-                ExpiresUtc = login.RememberMe ? DateTimeOffset.UtcNow.AddDays(7) : DateTimeOffset.UtcNow.AddHours(2)
-            };
-
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProps);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
             TempData["Erfolg"] = $"Willkommen zurück, {mitarbeiter.Name}!";
 
@@ -93,43 +71,20 @@ namespace MEH.Controllers
             return RedirectToAction("Index", "Ticket");
         }
 
-        // POST: /Account/Register
+        // POST: /Account/RegisterSubmit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterSubmit([Bind(Prefix = "Register")] RegisterViewModel register, string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            // Validierung
-            if (string.IsNullOrWhiteSpace(register.Vorname))
-            {
-                ModelState.AddModelError("Register.Vorname", "Bitte einen Vornamen eingeben.");
-            }
-            if (string.IsNullOrWhiteSpace(register.Nachname))
-            {
-                ModelState.AddModelError("Register.Nachname", "Bitte einen Nachnamen eingeben.");
-            }
-            if (string.IsNullOrWhiteSpace(register.Email))
-            {
-                ModelState.AddModelError("Register.Email", "Bitte eine gültige E-Mail eingeben.");
-            }
-            if (string.IsNullOrWhiteSpace(register.Password) || register.Password.Length < 4)
-            {
-                ModelState.AddModelError("Register.Password", "Das Passwort muss mindestens 4 Zeichen lang sein.");
-            }
-            if (register.Password != register.ConfirmPassword)
-            {
-                ModelState.AddModelError("Register.ConfirmPassword", "Die Passwörter stimmen nicht überein.");
-            }
+            // Check if email already registered
+            bool emailExists = await _context.Mitarbeiter
+                .AnyAsync(m => m.Email.ToLower() == register.Email.Trim().ToLower());
 
-            var cleanEmail = (register.Email ?? "").Trim().ToLower();
-            if (!string.IsNullOrWhiteSpace(cleanEmail))
+            if (emailExists)
             {
-                bool emailExists = await _context.Mitarbeiter.AnyAsync(m => m.Email.ToLower() == cleanEmail);
-                if (emailExists)
-                {
-                    ModelState.AddModelError("Register.Email", "Ein Account mit dieser E-Mail existiert bereits.");
-                }
+                ModelState.AddModelError("Register.Email", "Ein Account mit dieser E-Mail existiert bereits.");
             }
 
             if (!ModelState.IsValid)
@@ -137,13 +92,13 @@ namespace MEH.Controllers
                 return View("Login", new AuthPageViewModel { Register = register, ActiveTab = "register" });
             }
 
-            // Neuen Mitarbeiter in der Datenbank anlegen und dauerhaft speichern
+            // Save new Mitarbeiter to database
             var neuerMitarbeiter = new Mitarbeiter
             {
                 Vorname = register.Vorname.Trim(),
                 Nachname = register.Nachname.Trim(),
-                Email = cleanEmail,
-                Fachbereich = string.IsNullOrWhiteSpace(register.Fachbereich) ? "IT-Support" : register.Fachbereich.Trim(),
+                Email = register.Email.Trim().ToLower(),
+                Fachbereich = register.Fachbereich ?? "IT-Support",
                 Password = register.Password,
                 Rolle = MitarbeiterRolle.Support
             };
@@ -151,7 +106,7 @@ namespace MEH.Controllers
             _context.Mitarbeiter.Add(neuerMitarbeiter);
             await _context.SaveChangesAsync();
 
-            // Automatisch nach der Registrierung einloggen
+            // Auto-login after registration
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, neuerMitarbeiter.ID.ToString()),
@@ -160,24 +115,10 @@ namespace MEH.Controllers
                 new Claim(ClaimTypes.Role, neuerMitarbeiter.Rolle.ToString())
             };
 
-            var authProps = new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
-            };
-
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProps);
-
-            TempData["Erfolg"] = $"Registrierung erfolgreich! Willkommen im IT-Support Team, {neuerMitarbeiter.Name}.";
-
-            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-
+            TempData["Erfolg"] = $"Registrierung erfolgreich! Willkommen, {neuerMitarbeiter.Name}.";
             return RedirectToAction("Index", "Ticket");
         }
 
@@ -187,7 +128,7 @@ namespace MEH.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            TempData["Erfolg"] = "Du wurdest erfolgreich abgemeldet.";
+            TempData["Erfolg"] = "Erfolgreich abgemeldet.";
             return RedirectToAction(nameof(Login));
         }
 
