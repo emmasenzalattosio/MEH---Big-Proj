@@ -103,7 +103,10 @@ namespace MEH.Controllers
         {
             if (id == null) return NotFound();
 
-            var ticket = await _context.Ticket.FindAsync(id);
+            // Kategorie mitladen, damit die Kopfzeile der Edit-Seite den Kategorienamen anzeigen kann
+            var ticket = await _context.Ticket
+                .Include(t => t.Kategorie)
+                .FirstOrDefaultAsync(t => t.ID == id);
             if (ticket == null) return NotFound();
 
             await LadeDropdownsAsync(ticket.KategorieID, ticket.MitarbeiterID);
@@ -185,6 +188,7 @@ namespace MEH.Controllers
             {
                 _context.Ticket.Remove(ticket);
                 await _context.SaveChangesAsync();
+                TempData["Erfolg"] = $"Ticket #{ticket.ID} wurde gelöscht.";
             }
             return RedirectToAction(nameof(Index));
         }

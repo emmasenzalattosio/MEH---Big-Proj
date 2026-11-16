@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using MEH.Models;
 
 namespace MEH.Controllers
 {
@@ -23,7 +25,8 @@ namespace MEH.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View();
+            // Fehler-ID an die Error-View übergeben, damit sie dort angezeigt werden kann
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

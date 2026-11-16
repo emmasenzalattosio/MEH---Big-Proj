@@ -34,6 +34,12 @@ namespace MEH
                 db.Database.Migrate();
             }
          
+            // Fehlerbehandlung: Ausserhalb der Entwicklungsumgebung die eigene Fehlerseite (Views/Shared/Error.cshtml) zeigen
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
+
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication(); // Wer bist du? (liest das Cookie)
