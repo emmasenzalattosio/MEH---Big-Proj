@@ -30,7 +30,7 @@ namespace MEH.Controllers
             return View(mitarbeiter);
         }
 
-        // GET: Mitarbeiter/Details/5
+        // GET: Mitarbeiter/Details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
