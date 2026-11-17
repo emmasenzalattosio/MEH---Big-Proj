@@ -72,7 +72,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <div class="sd-detail-item">
-                        <div class="sd-detail-label">VERKNÜPFTE TICKETS</div>
+                        <div class="sd-detail-label">LINKED TICKETS</div>
                         <div class="sd-detail-value font-monospace @(hasTickets ? "text-danger" : "text-success") fs-5">
                             @Model.Tickets.Count Tickets
                         </div>
@@ -80,7 +80,7 @@
                 </div>
                 <div class="col-12">
                     <div class="sd-detail-item">
-                        <div class="sd-detail-label">BESCHREIBUNG</div>
+                        <div class="sd-detail-label">Beschreibung</div>
                         <div class="sd-detail-value text-secondary">
                             @(string.IsNullOrWhiteSpace(Model.Beschreibung) ? "– keine Beschreibung –" : Model.Beschreibung)
                         </div>
