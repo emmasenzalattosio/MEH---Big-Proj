@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MEH.Models;
@@ -7,7 +7,7 @@ namespace MEH.Controllers
 {
     public class TicketController : Controller
     {
-        // _context is our direct phone line to the SQL database (MEHDB)
+        // _context is our hotline to the database so we can scream at SQL to fetch our data
         private readonly MehDbContext _context;
 
         public TicketController(MehDbContext context)
@@ -19,8 +19,8 @@ namespace MEH.Controllers
         public async Task<IActionResult> Index(TicketStatus? statusFilter, TicketPrioritaet? prioFilter, string? suche)
         {
             // 1. COUNTING TICKETS FOR THE 4 TOP CARDS:
-            // CountAsync asks the database how many rows match each status.
-            // await tells C#: "Pause here until SQL answers, but don't freeze the whole server!"
+            // Count how many fires are burning right now in the building
+            // await tells C#: go do other work while SQL looks for rows, don't just freeze like a microwave
             ViewBag.OffenCount = await _context.Ticket.CountAsync(t => t.Status == TicketStatus.Offen);
             ViewBag.InArbeitCount = await _context.Ticket.CountAsync(t => t.Status == TicketStatus.InBearbeitung);
             ViewBag.SchlussCount = await _context.Ticket.CountAsync(t => t.Status == TicketStatus.Schluss);
@@ -32,7 +32,7 @@ namespace MEH.Controllers
             ViewBag.Suche = suche;
 
             // 2. BUILDING THE TICKET QUERY:
-            // Include means: "Don't just get the ticket, also fetch its connected Kategorie and Mitarbeiter from their tables!" (1:n Eager Loading)
+            // Include tells EF Core: "Bring the whole squad with you (Kategorie + Mitarbeiter) in one trip, don't make 50 separate trips to the fridge"
             var query = _context.Ticket
                 .Include(t => t.Kategorie)
                 .Include(t => t.Mitarbeiter)
@@ -95,10 +95,10 @@ namespace MEH.Controllers
 
         // POST: Ticket/Create (Runs when clicking the "Ticket speichern" button)
         [HttpPost]
-        [ValidateAntiForgeryToken] // Security guard: stops external hacker websites from submitting fake forms
+        [ValidateAntiForgeryToken] // Club bouncer: stops random hacker sites from submitting fake garbage forms
         public async Task<IActionResult> Create([Bind("ID,Titel,Beschreibung,Prioritaet,Status,HatNeuGestartet,KategorieID,MitarbeiterID")] Ticket ticket)
         {
-            // ModelState.IsValid checks if all [Required] rules were followed (e.g. title not empty)
+            // Checks if the user actually typed real info or just head-butted the keyboard
             if (ModelState.IsValid)
             {
                 ticket.ErstelltAm = DateTime.Now;
@@ -109,7 +109,7 @@ namespace MEH.Controllers
                 return RedirectToAction(nameof(Index)); // Go back to the dashboard table
             }
 
-            // If user forgot title/description, reload dropdowns and show the form again with red error messages!
+            // If they messed up and forgot the title, reload the dropdowns and roast them with red errors
             await LadeDropdownsAsync(ticket.KategorieID, ticket.MitarbeiterID);
             return View(ticket);
         }
@@ -175,7 +175,7 @@ namespace MEH.Controllers
             var ticket = await _context.Ticket.FindAsync(id);
             if (ticket == null) return NotFound();
 
-            ticket.OpenAgain(); // Sets Status = InBearbeitung
+            ticket.OpenAgain(); // Resurrects a dead ticket back to life when the printer starts smoking again
             await _context.SaveChangesAsync();
             
             TempData["Erfolg"] = $"Ticket #{ticket.ID} wurde wieder geöffnet (Status: In Bearbeitung).";
@@ -212,12 +212,7 @@ namespace MEH.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TicketExists(int? id)
-        {
-            return _context.Ticket.Any(e => e.ID == id);
-        }
-
-        // Helper method: Fills HTML <select> dropdowns with all categories & employees from the DB
+        // Fills the dropdowns so people don't have to guess employee names out of thin air
         private async Task LadeDropdownsAsync(int? selectedKategorie = null, int? selectedMitarbeiter = null)
         {
             var kategorien = await _context.Kategorie.OrderBy(k => k.Name).ToListAsync();
@@ -227,3 +222,4 @@ namespace MEH.Controllers
         }
     }
 }
+

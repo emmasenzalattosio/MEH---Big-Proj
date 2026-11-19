@@ -103,9 +103,7 @@
             {
                 var initials = $"{Model.Mitarbeiter.Vorname?.FirstOrDefault()}{Model.Mitarbeiter.Nachname?.FirstOrDefault()}".ToUpper();
                 <div class="d-flex align-items-center gap-3 my-3">
-                    <div class="sd-crew-avatar">
-                        @initials
-                    </div>
+                    <div class="sd-crew-avatar position-relative overflow-hidden"><span>@initials</span><img src="/images/@(Model.Mitarbeiter.ID).jpg" alt="@Model.Mitarbeiter.Name" class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover;" onerror="this.style.display='none';" /></div>
                     <div>
                         <div class="sd-crew-status">
                             <span class="sd-mini-dot"></span> IM DIENST
@@ -177,3 +175,4 @@
         </div>
     </div>
 </div>
+

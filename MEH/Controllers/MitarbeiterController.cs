@@ -16,7 +16,7 @@ namespace MEH.Controllers
         // GET: Mitarbeiter (Lists all employees + loads categories list into ViewBag for side-by-side display)
         public async Task<IActionResult> Index()
         {
-            // ViewBag carries the categories list as an extra backpack so the HTML view can show both tables!
+            // ViewBag carries the categories list like an extra backpack so the HTML view can show both tables side-by-side
             ViewBag.KategorienListe = await _context.Kategorie
                 .Include(k => k.Tickets)
                 .OrderBy(k => k.Name)
@@ -110,8 +110,8 @@ namespace MEH.Controllers
         }
 
         // POST: Mitarbeiter/Delete/5
-        // PFLICHT-GESCHÄFTSREGEL 2:
-        // An employee with assigned tickets CANNOT be deleted!
+        // SACRED RULE #2:
+        // You CANNOT fire/delete a technician who still has 5 open tickets on their desk! Reassign their work first
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
