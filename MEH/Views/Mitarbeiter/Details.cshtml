@@ -38,8 +38,9 @@
     <div class="col-12 col-lg-4">
         <div class="sd-crew-card mb-4">
             <div class="d-flex align-items-center gap-3 mb-3">
-                <div class="sd-crew-avatar" style="width: 56px; height: 56px; font-size: 1.25rem;">
-                    @initials
+                <div class="sd-crew-avatar position-relative overflow-hidden" style="width: 56px; height: 56px; font-size: 1.25rem;">
+                    <span>@initials</span>
+                    <img src="/images/@(Model.ID).jpg" alt="@Model.Name" class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover;" onerror="this.style.display='none';" />
                 </div>
                 <div>
                     <div class="sd-crew-status">
@@ -90,7 +91,7 @@
     <div class="col-12 col-lg-8">
         <div class="sd-join-card mb-4">
             
-            <div class="sd-join-kicker mb-1">STAMMDATEN // SYSTEMINFORMATIONEN</div>
+            <div class="sd-join-kicker mb-1">SYSTEMINFORMATIONEN</div>
             <h3 class="sd-join-title mb-4 fs-5">Mitarbeiter Details</h3>
 
             <div class="row g-3 mb-4">
@@ -170,3 +171,5 @@
         </div>
     </div>
 </div>
+
+

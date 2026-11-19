@@ -4,14 +4,14 @@ namespace MEH.Models
 {
     public class Ticket
     {
-        public int ID { get; set; } // Primary Key (unique ID in database)
+        public int ID { get; set; } // Database ID tag so SQL knows which mess this is
 
-        // Title validation: Required, between 5 and 120 letters
+        // Title: don't just type 'help', give at least 5 letters so we know what broke
         [Required(ErrorMessage = "Pflichtfeld: Bitte einen aussagekräftigen Titel eingeben.")]
         [StringLength(120, MinimumLength = 5, ErrorMessage = "Der Titel muss zwischen 5 und 120 Zeichen lang sein.")]
         public string Titel { get; set; } = "";
 
-        // Description validation: Required, between 10 and 500 letters
+        // Description: at least 10 letters explaining the catastrophe
         [Required(ErrorMessage = "Pflichtfeld: Bitte das Problem beschreiben.")]
         [StringLength(500, MinimumLength = 10, ErrorMessage = "Die Beschreibung muss zwischen 10 und 500 Zeichen lang sein.")]
         public string Beschreibung { get; set; } = "";
@@ -29,7 +29,7 @@ namespace MEH.Models
         [Display(Name = "Status")]
         public TicketStatus Status { get; set; }
 
-        // Did you restart the device? (Dortmund IT humor)
+        // The holy question: did you turn it off and on again before crying to IT?
         [Display(Name = "Gerät wurde bereits neu gestartet")]
         public bool HatNeuGestartet { get; set; }
 
@@ -47,12 +47,12 @@ namespace MEH.Models
         public int? MitarbeiterID { get; set; }
         public Mitarbeiter? Mitarbeiter { get; set; } // Navigation property to jump to the connected Mitarbeiter object
 
-        // PFLICHT-GESCHÄFTSREGEL 1:
-        // IstBear() returns true ONLY when status is NOT 'Schluss' (Abgeschlossen).
-        // If status is 'Schluss', this returns false and blocks editing!
+        // SACRED RULE #1:
+        // IstBear() = can we touch this ticket? Only if it's NOT already closed!
+        // If status is 'Schluss', it locks up and stops people from editing
         public bool IstBear() => Status != TicketStatus.Schluss;
 
-        // Reopens a closed ticket by switching status back to InBearbeitung
+        // Resurrects a dead ticket back to life when the issue is definitely not fixed
         public void OpenAgain()
         {
             if (Status == TicketStatus.Schluss)

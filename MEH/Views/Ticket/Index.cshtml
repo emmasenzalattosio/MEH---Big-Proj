@@ -24,7 +24,7 @@
                 <line x1="8" y1="21" x2="16" y2="21"/>
                 <line x1="12" y1="17" x2="12" y2="21"/>
             </svg>
-            TICKET SYSTEM // WESTFALEN OFFICE SOLUTIONS
+            MEH OFFICE SOLUTIONS
         </div>
         <h1 class="sd-hero-titel mb-1">IT-Support Übersicht</h1>
         <p class="sd-hero-unter mb-0">Zentrale Ticketverwaltung, Lastverteilung und SLA-Monitoring in Echtzeit.</p>
@@ -35,7 +35,7 @@
                 <line x1="12" y1="5" x2="12" y2="19"/>
                 <line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
-            Neues Ticket erfassen
+            Add new ticket
         </a>
     </div>
 </div>
@@ -138,7 +138,7 @@
                 <span class="sd-stream-titel" title="@t.Titel">@t.Titel</span>
             </div>
             <div class="sd-stream-rechts">
-                <span class="sd-dept-chip">[ @(t.Kategorie?.Name ?? "Allgemein") ]</span>
+                <span class="sd-dept-chip text-nowrap">@(t.Kategorie?.Name ?? "-")</span>
                 <span class="sd-badge @t.Prioritaet.BadgeKlasse()">@t.Prioritaet.Anzeige()</span>
                 <span class="sd-badge @t.Status.BadgeKlasse()">@t.Status.Anzeige()</span>
                 <a asp-action="Details" asp-route-id="@t.ID" class="sd-btn-oeffnen">
@@ -218,7 +218,7 @@
                             </a>
                         </td>
                         <td>
-                            <span class="sd-dept-chip">[ @(t.Kategorie?.Name ?? "–") ]</span>
+                            <span class="sd-dept-chip text-nowrap">@(t.Kategorie?.Name ?? "-")</span>
                         </td>
                         <td>
                             <span class="sd-badge @t.Prioritaet.BadgeKlasse()">@t.Prioritaet.Anzeige()</span>

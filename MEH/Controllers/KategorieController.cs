@@ -98,13 +98,13 @@ namespace MEH.Controllers
         }
 
         // POST: Kategorie/Delete/5
-        // PFLICHT-GESCHÄFTSREGEL 2:
-        // A category with assigned tickets CANNOT be deleted! (DeleteBehavior.Restrict)
+        // SACRED RULE #2:
+        // You CANNOT delete a category if tickets are still living in it! Don't leave orphan tickets in the void
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            // We MUST use Include(k => k.Tickets), otherwise the tickets list would be empty in C# and the rule wouldn't work!
+            // MUST use Include(k => k.Tickets) or C# will think the list is empty and let people delete illegally!
             var kategorie = await _context.Kategorie
                 .Include(k => k.Tickets)
                 .FirstOrDefaultAsync(k => k.ID == id);
