@@ -15,12 +15,20 @@ namespace MEH
             builder.Services.AddControllersWithViews();
             builder.Services.AddSignalR(); // Live-Chat
 
-            builder.Services.AddDbContext<MehDbContext>(opts =>
-                opts.UseSqlServer(builder.Configuration.GetConnectionString("MEH"),
-                    sqlOptions => sqlOptions.EnableRetryOnFailure(
-                        maxRetryCount: 5,
-                        maxRetryDelay: TimeSpan.FromSeconds(5),
-                        errorNumbersToAdd: null)));
+            // Auf Railway (Cloud) nutzen wir SQLite direkt im Container (schnell & absturzsicher),
+            // lokal in Visual Studio weiterhin ganz normal SQL Server (LocalDB).
+            bool isRailway = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("RAILWAY_ENVIRONMENT"));
+
+            if (isRailway)
+            {
+                builder.Services.AddDbContext<MehDbContext>(opts =>
+                    opts.UseSqlite("Data Source=meh_cloud.db"));
+            }
+            else
+            {
+                builder.Services.AddDbContext<MehDbContext>(opts =>
+                    opts.UseSqlServer(builder.Configuration.GetConnectionString("MEH")));
+            }
 
             // Login per Cookie
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -36,17 +44,32 @@ namespace MEH
             using (var scope = app.Services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<MehDbContext>();
-                for (int attempt = 1; attempt <= 6; attempt++)
+                if (isRailway)
                 {
-                    try
+                    db.Database.EnsureCreated();
+                    if (!db.Mitarbeiter.Any())
                     {
-                        db.Database.Migrate();
-                        break;
+                        db.Mitarbeiter.AddRange(
+                            new Mitarbeiter { ID = 1, Vorname = "Florina Emma", Nachname = "Stanisel", Email = "f.emmastanisel@gmail.com", Password = "HasanGay67", Fachbereich = "PowerPointer", Rolle = MitarbeiterRolle.Mitarbeiter },
+                            new Mitarbeiter { ID = 1004, Vorname = "Hasan", Nachname = "Gay", Email = "hasan.gay67@gmail.com", Password = "HasanGay67", Fachbereich = "Scrum - Master", Rolle = MitarbeiterRolle.Support },
+                            new Mitarbeiter { ID = 1005, Vorname = "Marcel", Nachname = "Femboy", Email = "Marcel.Femboy@gmail.com", Password = "HasanGay67", Fachbereich = "Aspiring Programmer", Rolle = MitarbeiterRolle.Support }
+                        );
+                        db.Kategorie.AddRange(
+                            new Kategorie { ID = 1, Name = "Dill does", Beschreibung = "Blabla" },
+                            new Kategorie { ID = 2, Name = "Becoming crazy", Beschreibung = null }
+                        );
+                        db.SaveChanges();
+
+                        db.Ticket.AddRange(
+                            new Ticket { ID = 1, Titel = "Monitor doesn’t turn  on", Beschreibung = "hgdfhgf, jh", Status = (TicketStatus)1, Prioritaet = (TicketPrioritaet)1, KategorieID = 1, MitarbeiterID = null, ErstelltAm = new DateTime(2026, 11, 12, 15, 31, 15) },
+                            new Ticket { ID = 2, Titel = "Hasan hat meine Mittagsessen gegessen", Beschreibung = "And now?? Should I die of hunger??", Status = (TicketStatus)1, Prioritaet = (TicketPrioritaet)2, KategorieID = 1, MitarbeiterID = 1, ErstelltAm = new DateTime(2026, 11, 12, 15, 32, 15) }
+                        );
+                        db.SaveChanges();
                     }
-                    catch (Exception) when (attempt < 6)
-                    {
-                        Thread.Sleep(3000);
-                    }
+                }
+                else
+                {
+                    db.Database.Migrate();
                 }
             }
          
