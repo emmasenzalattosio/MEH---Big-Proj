@@ -1,11 +1,11 @@
 // LIVE-CHAT
 // 1. Button unten rechts öffnet ein Fenster mit allen Mitarbeitern
 // 2. Klick auf einen Mitarbeiter -> Verlauf laden (/Chat/Verlauf/ID) und schreiben
-// 3. Senden + Empfangen läuft live über SignalR (/chatHub -> Hubs/ChatHub.cs)
-// 4. Neue Nachricht, während der Chat nicht offen ist -> rote Zahl am Button + kurzer Hinweis
+// 3. Senden über /Chat/Senden + Echtzeit-Push über SignalR (/chatHub) + automatischer Live-Sync
+// 4. Neue Nachricht, während der Chat nicht offen ist -> rote Zahl am Button + Toast-Hinweis
 (function () {
     const root = document.getElementById('sdChat');
-    if (!root || typeof signalR === 'undefined') return;
+    if (!root) return;
 
     const meineId = parseInt(root.dataset.meineId, 10);
 
@@ -27,48 +27,106 @@
     let aktiverKontakt = null; // { id, name } oder null, wenn die Liste angezeigt wird
     let ungelesenGesamt = 0;
     let toastTimer = null;
+    let letzteToastNachrichtId = 0;
+    const angezeigteIds = new Set(); // verhindert doppelte Anzeige bei gleichzeitigem Push + Sync
 
-    // ---------- Verbindung zum Server ----------
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl('/chatHub')
-        .withAutomaticReconnect()
-        .build();
+    // ---------- Verbindung zum Server (SignalR Echtzeit) ----------
+    let connection = null;
+    if (typeof signalR !== 'undefined') {
+        connection = new signalR.HubConnectionBuilder()
+            .withUrl('/chatHub')
+            .withAutomaticReconnect()
+            .build();
 
-    connection.on('NeueNachricht', function (n) {
+        connection.on('NeueNachricht', function (n) {
+            verarbeiteEingehendeNachricht(n);
+        });
+
+        connection.start()
+            .then(ladeUngelesen)
+            .catch(function (err) {
+                console.warn('SignalR Hinweis (Fallback aktiv):', err);
+                ladeUngelesen();
+            });
+
+        connection.onreconnected(ladeUngelesen);
+    } else {
+        ladeUngelesen();
+    }
+
+    function verarbeiteEingehendeNachricht(n) {
         const vonMir = n.vonId === meineId;
         const anderePerson = vonMir ? n.anId : n.vonId;
+
+        if (!vonMir && n.id) {
+            letzteToastNachrichtId = Math.max(letzteToastNachrichtId, n.id);
+        }
 
         // Gespräch mit dieser Person ist gerade offen -> direkt anzeigen
         if (istFensterOffen() && aktiverKontakt && aktiverKontakt.id === anderePerson) {
             zeigeNachricht(n);
-            if (!vonMir) connection.invoke('MarkiereGelesen', n.vonId).catch(console.error);
+            if (!vonMir && connection && connection.state === 'Connected') {
+                connection.invoke('MarkiereGelesen', n.vonId).catch(function () {});
+            }
             return;
         }
 
-        // Sonst: Benachrichtigung
+        // Sonst: Benachrichtigung + Badge aktualisieren
         if (!vonMir) {
             setzeBadge(ungelesenGesamt + 1);
-            zeigeToast(n.vonName, n.text);
-            if (istFensterOffen() && !aktiverKontakt) ladeKontakte(); // Zahlen in der Liste aktualisieren
+            zeigeToast(n.vonName || 'Neue Nachricht', n.text);
+            if (istFensterOffen() && !aktiverKontakt) {
+                ladeKontakte();
+            }
         }
-    });
+    }
 
-    connection.start()
-        .then(ladeUngelesen)
-        .catch(function (err) { console.error('Chat-Verbindung fehlgeschlagen:', err); });
-
-    connection.onreconnected(ladeUngelesen);
+    // ---------- Automatischer Live-Sync (fängt alles ab, falls WebSockets blockiert sind) ----------
+    setInterval(function () {
+        if (istFensterOffen() && aktiverKontakt) {
+            // Aktives Gespräch: neue Nachrichten abholen
+            fetch('/Chat/Verlauf/' + aktiverKontakt.id, { cache: 'no-store' })
+                .then(function (r) { return r.ok ? r.json() : []; })
+                .then(function (nachrichten) {
+                    nachrichten.forEach(zeigeNachricht);
+                })
+                .catch(function () {});
+        } else {
+            // Chat geschlossen oder Kontaktliste offen: Ungelesene prüfen
+            ladeUngelesen();
+            if (istFensterOffen() && !aktiverKontakt) {
+                ladeKontakte();
+            }
+        }
+    }, 2500);
 
     // ---------- Daten vom Server ----------
     function ladeUngelesen() {
-        return fetch('/Chat/Ungelesen')
-            .then(r => r.json())
-            .then(setzeBadge);
+        return fetch('/Chat/Ungelesen', { cache: 'no-store' })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (daten) {
+                if (daten === null) return;
+                // Unterstützt sowohl Zahl als auch Objekt { anzahl, neueste }
+                if (typeof daten === 'number') {
+                    setzeBadge(daten);
+                    return;
+                }
+                const vorher = ungelesenGesamt;
+                setzeBadge(daten.anzahl);
+
+                if (daten.neueste && daten.neueste.id > letzteToastNachrichtId) {
+                    if (letzteToastNachrichtId > 0 || daten.anzahl > vorher) {
+                        zeigeToast(daten.neueste.vonName, daten.neueste.text);
+                    }
+                    letzteToastNachrichtId = daten.neueste.id;
+                }
+            })
+            .catch(function () {});
     }
 
     function ladeKontakte() {
-        return fetch('/Chat/Kontakte')
-            .then(r => r.json())
+        return fetch('/Chat/Kontakte', { cache: 'no-store' })
+            .then(function (r) { return r.ok ? r.json() : []; })
             .then(function (liste) {
                 el.kontakte.innerHTML = '';
                 if (liste.length === 0) {
@@ -111,7 +169,8 @@
                     el.kontakte.appendChild(li);
                 });
                 setzeBadge(summe);
-            });
+            })
+            .catch(function () {});
     }
 
     function oeffneGespraech(kontakt) {
@@ -121,9 +180,10 @@
         el.gespraech.hidden = false;
         el.zurueck.hidden = false;
         el.verlauf.innerHTML = '';
+        angezeigteIds.clear();
 
-        fetch('/Chat/Verlauf/' + kontakt.id)
-            .then(r => r.json())
+        fetch('/Chat/Verlauf/' + kontakt.id, { cache: 'no-store' })
+            .then(function (r) { return r.ok ? r.json() : []; })
             .then(function (nachrichten) {
                 if (nachrichten.length === 0) {
                     const leer = document.createElement('div');
@@ -132,8 +192,9 @@
                     el.verlauf.appendChild(leer);
                 }
                 nachrichten.forEach(zeigeNachricht);
-                return ladeUngelesen(); // Verlauf hat die Nachrichten als gelesen markiert
-            });
+                return ladeUngelesen();
+            })
+            .catch(function () {});
 
         el.text.focus();
     }
@@ -149,6 +210,10 @@
 
     // ---------- Anzeige ----------
     function zeigeNachricht(n) {
+        if (!n) return;
+        if (n.id && angezeigteIds.has(n.id)) return;
+        if (n.id) angezeigteIds.add(n.id);
+
         const leer = el.verlauf.querySelector('.sd-chat-leer');
         if (leer) leer.remove();
 
@@ -156,7 +221,7 @@
         blase.className = 'sd-chat-blase ' + (n.vonId === meineId ? 'sd-chat-ich' : 'sd-chat-du');
 
         const text = document.createElement('div');
-        text.textContent = n.text; // textContent statt innerHTML -> kein HTML/Script aus Nachrichten
+        text.textContent = n.text;
         const zeit = document.createElement('small');
         zeit.textContent = n.gesendetAm;
 
@@ -180,7 +245,7 @@
         el.toast.append(titel, vorschau);
         el.toast.hidden = false;
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(function () { el.toast.hidden = true; }, 4000);
+        toastTimer = setTimeout(function () { el.toast.hidden = true; }, 4500);
     }
 
     function istFensterOffen() {
@@ -188,7 +253,7 @@
     }
 
     function initialen(name) {
-        return name.split(' ').filter(Boolean).map(t => t[0]).join('').slice(0, 2).toUpperCase();
+        return name.split(' ').filter(Boolean).map(function (t) { return t[0]; }).join('').slice(0, 2).toUpperCase();
     }
 
     // ---------- Klicks ----------
@@ -220,11 +285,32 @@
         const text = el.text.value.trim();
         if (!text || !aktiverKontakt) return;
 
-        connection.invoke('SendeNachricht', aktiverKontakt.id, text)
-            .then(function () { el.text.value = ''; })
-            .catch(function (err) {
-                console.error(err);
-                zeigeToast('Fehler', 'Nachricht konnte nicht gesendet werden.');
+        el.text.value = '';
+        el.text.focus();
+
+        // Über /Chat/Senden schicken (speichert in DB + triggert SignalR-Push)
+        fetch('/Chat/Senden', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                anId: aktiverKontakt.id,
+                vonId: meineId,
+                text: text
+            })
+        })
+        .then(function (r) {
+            return r.json().then(function (body) {
+                if (!r.ok) throw new Error(body.fehler || 'Nachricht konnte nicht gesendet werden.');
+                return body;
             });
+        })
+        .then(function (nachricht) {
+            zeigeNachricht(nachricht);
+        })
+        .catch(function (err) {
+            console.error(err);
+            el.text.value = text; // Text wiederherstellen
+            zeigeToast('Hinweis', err.message || 'Nachricht konnte nicht gesendet werden.');
+        });
     });
 })();
