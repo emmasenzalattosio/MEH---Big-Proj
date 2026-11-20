@@ -132,10 +132,51 @@
         </footer>
     </div>
 
+    @* LIVE-CHAT: nur für eingeloggte Benutzer. Logik in wwwroot/js/chat.js, Server-Seite in Hubs/ChatHub.cs *@
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div id="sdChat" class="sd-chat" data-meine-id="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value">
+
+            <div id="sdChatFenster" class="sd-chat-fenster" hidden>
+                <div class="sd-chat-kopf">
+                    <button id="sdChatZurueck" type="button" class="sd-chat-iconbtn" title="Zurück zur Liste" hidden>&larr;</button>
+                    <span id="sdChatTitel" class="sd-chat-titel">Chat</span>
+                    <button id="sdChatSchliessen" type="button" class="sd-chat-iconbtn" title="Schließen">&times;</button>
+                </div>
+
+                @* Ansicht 1: Liste der Mitarbeiter *@
+                <ul id="sdChatKontakte" class="sd-chat-kontakte"></ul>
+
+                @* Ansicht 2: Gespräch mit einer Person *@
+                <div id="sdChatGespraech" class="sd-chat-gespraech" hidden>
+                    <div id="sdChatVerlauf" class="sd-chat-verlauf"></div>
+                    <form id="sdChatForm" class="sd-chat-eingabe" autocomplete="off">
+                        <input id="sdChatText" type="text" maxlength="1000" placeholder="Nachricht schreiben …" />
+                        <button type="submit" title="Senden">&#10148;</button>
+                    </form>
+                </div>
+            </div>
+
+            <button id="sdChatButton" type="button" class="sd-chat-button" title="Chat öffnen">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span id="sdChatBadge" class="sd-chat-badge" hidden>0</span>
+            </button>
+
+            <div id="sdChatToast" class="sd-chat-toast" hidden></div>
+        </div>
+    }
+
     @* JavaScript files loaded at bottom so the website doesn't freeze while loading scripts *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+        <script src="~/js/chat.js" asp-append-version="true"></script>
+    }
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

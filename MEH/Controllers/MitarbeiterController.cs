@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MEH.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MEH.Controllers
 {
+    [Authorize]
     public class MitarbeiterController : Controller
     {
         private readonly MehDbContext _context;
@@ -129,6 +131,12 @@ namespace MEH.Controllers
                     TempData["Fehler"] = $"{mitarbeiter.Name} kann nicht gelöscht werden: Ihm/ihr sind noch {mitarbeiter.Tickets.Count} Ticket(s) zugewiesen. Bitte die Tickets zuerst neu zuweisen.";
                     return RedirectToAction(nameof(Index));
                 }
+                // Chat-Nachrichten von/an diese Person zuerst entfernen, sonst blockiert die Datenbank das Löschen
+                var chatNachrichten = await _context.ChatNachricht
+                    .Where(c => c.VonMitarbeiterID == mitarbeiter.ID || c.AnMitarbeiterID == mitarbeiter.ID)
+                    .ToListAsync();
+                _context.ChatNachricht.RemoveRange(chatNachrichten);
+
                 _context.Mitarbeiter.Remove(mitarbeiter);
                 await _context.SaveChangesAsync();
                 TempData["Erfolg"] = $"Mitarbeiter {mitarbeiter.Name} wurde gelöscht.";

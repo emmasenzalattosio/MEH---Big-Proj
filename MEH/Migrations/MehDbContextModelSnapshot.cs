@@ -22,6 +22,40 @@ namespace MEH.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("MEH.Models.ChatNachricht", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("AnMitarbeiterID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Gelesen")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("GesendetAm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("VonMitarbeiterID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("AnMitarbeiterID");
+
+                    b.HasIndex("VonMitarbeiterID");
+
+                    b.ToTable("ChatNachricht");
+                });
+
             modelBuilder.Entity("MEH.Models.Kategorie", b =>
                 {
                     b.Property<int>("ID")
@@ -125,6 +159,25 @@ namespace MEH.Migrations
                     b.HasIndex("MitarbeiterID");
 
                     b.ToTable("Ticket");
+                });
+
+            modelBuilder.Entity("MEH.Models.ChatNachricht", b =>
+                {
+                    b.HasOne("MEH.Models.Mitarbeiter", "AnMitarbeiter")
+                        .WithMany()
+                        .HasForeignKey("AnMitarbeiterID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MEH.Models.Mitarbeiter", "VonMitarbeiter")
+                        .WithMany()
+                        .HasForeignKey("VonMitarbeiterID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AnMitarbeiter");
+
+                    b.Navigation("VonMitarbeiter");
                 });
 
             modelBuilder.Entity("MEH.Models.Ticket", b =>
