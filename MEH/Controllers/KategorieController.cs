@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MEH.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MEH.Controllers
 {
+    [Authorize]
     public class KategorieController : Controller
     {
         private readonly MehDbContext _context;

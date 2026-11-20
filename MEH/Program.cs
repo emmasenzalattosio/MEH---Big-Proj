@@ -13,6 +13,7 @@ namespace MEH
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddSignalR(); // Live-Chat
 
             builder.Services.AddDbContext<MehDbContext>
                 (opts => opts.UseSqlServer(builder.Configuration.GetConnectionString("MEH")));
@@ -49,6 +50,9 @@ namespace MEH
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
+
+            // Live-Chat: der Browser verbindet sich mit /chatHub
+            app.MapHub<MEH.Hubs.ChatHub>("/chatHub");
 
             app.Run();
         }

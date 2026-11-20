@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MEH.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MEH.Controllers
 {
+    [Authorize]
     public class TicketController : Controller
     {
         // _context is our hotline to the database so we can scream at SQL to fetch our data
