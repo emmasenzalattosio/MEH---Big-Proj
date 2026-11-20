@@ -15,8 +15,12 @@ namespace MEH
             builder.Services.AddControllersWithViews();
             builder.Services.AddSignalR(); // Live-Chat
 
-            builder.Services.AddDbContext<MehDbContext>
-                (opts => opts.UseSqlServer(builder.Configuration.GetConnectionString("MEH")));
+            builder.Services.AddDbContext<MehDbContext>(opts =>
+                opts.UseSqlServer(builder.Configuration.GetConnectionString("MEH"),
+                    sqlOptions => sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(5),
+                        errorNumbersToAdd: null)));
 
             // Login per Cookie
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -32,7 +36,18 @@ namespace MEH
             using (var scope = app.Services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<MehDbContext>();
-                db.Database.Migrate();
+                for (int attempt = 1; attempt <= 6; attempt++)
+                {
+                    try
+                    {
+                        db.Database.Migrate();
+                        break;
+                    }
+                    catch (Exception) when (attempt < 6)
+                    {
+                        Thread.Sleep(3000);
+                    }
+                }
             }
          
             // Fehlerbehandlung: Ausserhalb der Entwicklungsumgebung die eigene Fehlerseite (Views/Shared/Error.cshtml) zeigen
